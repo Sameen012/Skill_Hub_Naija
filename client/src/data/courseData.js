@@ -126,7 +126,7 @@ export const COURSES = [
         id: 7,
         title: 'Graphic Design Fundamentals',
         category: 'Design',
-        thumbnail: 'https://images.unsplash.com/photo-1626785774573-4b799314346d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+        thumbnail: 'https://wearebluegrass.com/wp-content/uploads/2024/05/importance-of-graphic-design-services-in-digital-marketing-2.png',
         description: 'Learn the fundamental principles of graphic design, including color theory, typography, layout, and composition.',
         price: 0,
         type: 'self-paced',
