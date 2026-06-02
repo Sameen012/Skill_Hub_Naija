@@ -184,10 +184,10 @@ const Home = () => {
                         {/* Course Card 2 */}
                         <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow border border-slate-100 group">
                             <div className="h-40 md:h-48 bg-gray-200 relative overflow-hidden">
-                                <img src="https://img.youtube.com/vi/j59qQ7hBpCc/maxresdefault.jpg" alt="React" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                <img src="https://wearebluegrass.com/wp-content/uploads/2024/05/importance-of-graphic-design-services-in-digital-marketing-2.png" alt="Graphic Design" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                             </div>
                             <div className="p-6">
-                                <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded mb-2 inline-block">FRONTEND</span>
+                                <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded mb-2 inline-block">GRAPHIC DESIGN</span>
                                 <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-1">Graphic Design Full Course</h3>
                                 <p className="text-sm text-slate-500 mb-4 line-clamp-2">Learn How to Create a Dianamic Design from scratch.</p>
                                 <div className="flex justify-between items-center border-t border-slate-100 pt-4">
