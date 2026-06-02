@@ -63,7 +63,7 @@ const Register = () => {
             await register(formData.name, formData.email, formData.password, formData.confirmPassword);
             navigate('/dashboard/learner'); 
         } catch (err) {
-            setError(err || 'Failed to create account');
+            setError(err?.message || err || 'Failed to create account');
         } finally {
             setLoading(false);
         }

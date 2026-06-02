@@ -1,4 +1,5 @@
-import pool from './config/db.js'; // <--- UPDATED to db.js
+const bcrypt = require('bcryptjs');
+const pool = require('./config/db'); // <--- UPDATED to db.js
 
 const seedData = async () => {
   console.log("🌱 Seeding Database...");
@@ -11,6 +12,29 @@ const seedData = async () => {
     await pool.query('TRUNCATE TABLE courses');
     await pool.query('TRUNCATE TABLE users');
     await pool.query('SET FOREIGN_KEY_CHECKS = 1');
+
+    const defaultUsers = [
+      {
+        name: 'Admin User',
+        email: 'admin@test.com',
+        password: 'admin123',
+        role: 'admin',
+      },
+      {
+        name: 'Instructor User',
+        email: 'instructor@test.com',
+        password: 'instructor123',
+        role: 'instructor',
+      },
+    ];
+
+    for (const user of defaultUsers) {
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+      await pool.query(
+        'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+        [user.name, user.email, hashedPassword, user.role]
+      );
+    }
 
     // 2. Define Courses
     const courses = [

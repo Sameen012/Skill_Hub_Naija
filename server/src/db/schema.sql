@@ -41,8 +41,22 @@ CREATE TABLE IF NOT EXISTS enrollments (
     FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS resources (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    course_id INT NULL,
+    file_name VARCHAR(255) NOT NULL,
+    file_type VARCHAR(100) NOT NULL,
+    file_size INT NOT NULL,
+    file_data LONGBLOB NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE SET NULL
+);
+
 -- INDEXES
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_modules_course ON modules(course_id);
 CREATE INDEX idx_enrollments_user ON enrollments(user_id);
 CREATE INDEX idx_enrollments_course ON enrollments(course_id);
+CREATE INDEX idx_resources_course ON resources(course_id);

@@ -7,6 +7,7 @@ const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const courseRoutes = require('./routes/courseRoutes');
+const resourceRoutes = require('./routes/resourceRoutes');
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
+app.use('/api/resources', resourceRoutes);
 
 app.get('/', (req, res) => {
   res.send('API is running...');

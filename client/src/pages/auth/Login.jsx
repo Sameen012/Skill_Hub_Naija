@@ -33,7 +33,7 @@ const Login = () => {
 
             navigate(targetRoute);
         } catch (err) {
-            setError(err || 'Failed to sign in');
+            setError(err?.message || err || 'Failed to sign in');
         } finally {
             setLoading(false);
         }

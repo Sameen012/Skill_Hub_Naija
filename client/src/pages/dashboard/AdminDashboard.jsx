@@ -5,6 +5,7 @@ import ThemeToggle from '../../components/common/ThemeToggle.jsx';
 import Button from '../../components/common/Button.jsx';
 import Input from '../../components/common/Input.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
+import api from '../../api/axios';
 import { getAllCourses, saveAllCourses } from '../../utils/courseStore.js';
 import {
     Bell,
@@ -55,6 +56,7 @@ const emptyResourceForm = {
     title: '',
     description: '',
     courseId: 'all',
+    file: null,
     fileName: '',
     fileData: '',
     fileSize: '',
@@ -63,7 +65,7 @@ const emptyResourceForm = {
 const ADMIN_NOTIFICATIONS_KEY = 'skillhub_admin_notifications';
 const ENROLLMENT_RECORDS_KEY = 'skillhub_enrollment_records';
 const REGISTERED_USERS_KEY = 'skillhub_registered_users';
-const ADMIN_RESOURCES_KEY = 'skillhub_admin_resources';
+const API_BASE_URL = api.defaults.baseURL || 'http://localhost:5000/api';
 
 const formatDate = (value) => new Date(value).toLocaleString('en-US', {
     month: 'short',
@@ -87,21 +89,27 @@ const AdminDashboard = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        const storedCourses = getAllCourses();
-        setCourses(storedCourses);
-        setActiveCourseId(storedCourses[0]?.id ?? null);
+        const loadDashboardData = async () => {
+            try {
+                const storedCourses = getAllCourses();
+                setCourses(storedCourses);
+                setActiveCourseId(storedCourses[0]?.id ?? null);
 
-        try {
-            setNotifications(JSON.parse(localStorage.getItem(ADMIN_NOTIFICATIONS_KEY) || '[]'));
-            setEnrollmentRecords(JSON.parse(localStorage.getItem(ENROLLMENT_RECORDS_KEY) || '[]'));
-            setRegisteredUsers(JSON.parse(localStorage.getItem(REGISTERED_USERS_KEY) || '[]'));
-            setResources(JSON.parse(localStorage.getItem(ADMIN_RESOURCES_KEY) || '[]'));
-        } catch {
-            setNotifications([]);
-            setEnrollmentRecords([]);
-            setRegisteredUsers([]);
-            setResources([]);
-        }
+                setNotifications(JSON.parse(localStorage.getItem(ADMIN_NOTIFICATIONS_KEY) || '[]'));
+                setEnrollmentRecords(JSON.parse(localStorage.getItem(ENROLLMENT_RECORDS_KEY) || '[]'));
+                setRegisteredUsers(JSON.parse(localStorage.getItem(REGISTERED_USERS_KEY) || '[]'));
+
+                const { data } = await api.get('/resources');
+                setResources(data);
+            } catch {
+                setNotifications([]);
+                setEnrollmentRecords([]);
+                setRegisteredUsers([]);
+                setResources([]);
+            }
+        };
+
+        loadDashboardData();
     }, []);
 
     const selectedCourse = useMemo(() => {
@@ -273,45 +281,37 @@ const AdminDashboard = () => {
             return;
         }
 
-        const reader = new FileReader();
-        reader.onload = () => {
-            setResourceForm((current) => ({
-                ...current,
-                fileName: file.name,
-                fileData: String(reader.result || ''),
-                fileSize: `${Math.max(1, Math.round(file.size / 1024))} KB`,
-            }));
-        };
-        reader.readAsDataURL(file);
+        setResourceForm((current) => ({
+            ...current,
+            file,
+            fileName: file.name,
+            fileSize: `${Math.max(1, Math.round(file.size / 1024))} KB`,
+        }));
     };
 
-    const handleResourceSave = (event) => {
+    const handleResourceSave = async (event) => {
         event.preventDefault();
-        if (!resourceForm.title || !resourceForm.fileData) return;
+        if (!resourceForm.title || !resourceForm.file) return;
 
-        const nextResources = [
-            {
-                id: Date.now(),
-                title: resourceForm.title,
-                description: resourceForm.description,
-                courseId: resourceForm.courseId,
-                fileName: resourceForm.fileName,
-                fileData: resourceForm.fileData,
-                fileSize: resourceForm.fileSize,
-                createdAt: new Date().toISOString(),
+        const formData = new FormData();
+        formData.append('title', resourceForm.title);
+        formData.append('description', resourceForm.description);
+        formData.append('courseId', resourceForm.courseId);
+        formData.append('file', resourceForm.file);
+
+        const { data } = await api.post('/resources', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
             },
-            ...resources,
-        ];
+        });
 
-        setResources(nextResources);
-        localStorage.setItem(ADMIN_RESOURCES_KEY, JSON.stringify(nextResources));
+        setResources((current) => [data, ...current]);
         setResourceForm(emptyResourceForm);
     };
 
-    const handleResourceDelete = (resourceId) => {
-        const nextResources = resources.filter((resource) => resource.id !== resourceId);
-        setResources(nextResources);
-        localStorage.setItem(ADMIN_RESOURCES_KEY, JSON.stringify(nextResources));
+    const handleResourceDelete = async (resourceId) => {
+        await api.delete(`/resources/${resourceId}`);
+        setResources((current) => current.filter((resource) => resource.id !== resourceId));
     };
 
     const handleNotificationSend = (event) => {
@@ -645,11 +645,11 @@ const AdminDashboard = () => {
                                                 <div>
                                                     <p className="font-semibold text-slate-900 dark:text-white">{resource.title}</p>
                                                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                                                        {resource.fileName} {resource.fileSize ? `• ${resource.fileSize}` : ''}
+                                                        {resource.fileName} {resource.fileSize ? `• ${Math.max(1, Math.round(resource.fileSize / 1024))} KB` : ''}
                                                     </p>
                                                 </div>
                                                 <div className="flex items-center gap-2">
-                                                    <a href={resource.fileData} download={resource.fileName} className="rounded-lg bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 hover:bg-rose-100 dark:bg-rose-950/50 dark:text-rose-300 dark:hover:bg-rose-950">
+                                                    <a href={`${API_BASE_URL}${resource.downloadUrl}`} download={resource.fileName} className="rounded-lg bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 hover:bg-rose-100 dark:bg-rose-950/50 dark:text-rose-300 dark:hover:bg-rose-950">
                                                         Download
                                                     </a>
                                                     <button type="button" onClick={() => handleResourceDelete(resource.id)} className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-red-600 dark:hover:bg-slate-800">

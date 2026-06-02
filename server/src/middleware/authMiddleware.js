@@ -30,4 +30,12 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+const authorizeRoles = (...allowedRoles) => (req, res, next) => {
+  if (!req.user || !allowedRoles.includes(req.user.role)) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  next();
+};
+
+module.exports = { protect, authorizeRoles };

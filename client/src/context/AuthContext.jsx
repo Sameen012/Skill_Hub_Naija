@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../api/axios';
 
 const AuthContext = createContext(null);
 
@@ -6,41 +7,8 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const seedDefaultUsers = () => {
-        const storedUsers = JSON.parse(localStorage.getItem('skillhub_registered_users') || '[]');
-        const defaultUsers = [
-            {
-                id: 'admin-seed',
-                name: 'Admin User',
-                email: 'admin@test.com',
-                password: 'admin123',
-                role: 'admin',
-                createdAt: new Date().toISOString(),
-            },
-            {
-                id: 'instructor-seed',
-                name: 'Instructor User',
-                email: 'instructor@test.com',
-                password: 'instructor123',
-                role: 'instructor',
-                createdAt: new Date().toISOString(),
-            },
-        ];
-
-        let updatedUsers = [...storedUsers];
-        defaultUsers.forEach((defaultUser) => {
-            if (!updatedUsers.some((user) => user.email === defaultUser.email)) {
-                updatedUsers.push(defaultUser);
-            }
-        });
-
-        localStorage.setItem('skillhub_registered_users', JSON.stringify(updatedUsers));
-    };
-
     // Check for persisted user on mount
     useEffect(() => {
-        seedDefaultUsers();
-
         const storedUser = localStorage.getItem('skillhub_user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
@@ -49,121 +17,65 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        // SIMULATION LOGIC - Replace with real API call later
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Validation: Email and password required
-                if (!email || !password) {
-                    reject('Email and password are required');
-                    return;
-                }
+        if (!email || !password) {
+            throw new Error('Email and password are required');
+        }
 
-                // Validation: Check password format (at least 6 characters)
-                if (password.length < 6) {
-                    reject('Password must be at least 6 characters long');
-                    return;
-                }
+        try {
+            const { data } = await api.post('/auth/login', { email, password });
 
-                // Validation: Verify user exists (mock registered users)
-                const registeredUsers = JSON.parse(localStorage.getItem('skillhub_registered_users') || '[]');
-                const userExists = registeredUsers.find(u => u.email === email);
+            const loggedInUser = {
+                id: data.id,
+                name: data.name,
+                email: data.email,
+                role: data.role,
+                avatar: data.avatar || null,
+                token: data.token,
+            };
 
-                if (!userExists) {
-                    reject('User not found. Please register first or check your email.');
-                    return;
-                }
+            setUser(loggedInUser);
+            localStorage.setItem('skillhub_user', JSON.stringify(loggedInUser));
+            localStorage.setItem('skillhub_token', loggedInUser.token);
 
-                // Validation: Verify password matches stored password
-                if (userExists.password !== password) {
-                    reject('Invalid password. Please try again.');
-                    return;
-                }
-
-                let role = userExists.role || 'learner';
-                if (email === 'instructor@test.com') role = 'instructor';
-                if (email === 'admin@test.com') role = 'admin';
-
-                const mockUser = {
-                    id: Date.now(),
-                    name: userExists.name,
-                    email,
-                    role,
-                    token: 'mock-jwt-token-' + Date.now(), // Simulation
-                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`
-                };
-
-                setUser(mockUser);
-                localStorage.setItem('skillhub_user', JSON.stringify(mockUser));
-                localStorage.setItem('skillhub_token', mockUser.token);
-                resolve(mockUser);
-            }, 800);
-        });
+            return loggedInUser;
+        } catch (error) {
+            throw new Error(error.response?.data?.error || error.message || 'Failed to sign in');
+        }
     };
 
     const register = async (name, email, password, confirmPassword) => {
-        // SIMULATION LOGIC
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Validation: All fields required
-                if (!name || !email || !password || !confirmPassword) {
-                    reject('All fields are required');
-                    return;
-                }
+        if (!name || !email || !password || !confirmPassword) {
+            throw new Error('All fields are required');
+        }
 
-                // Validation: Password strength (minimum 6 characters)
-                if (password.length < 6) {
-                    reject('Password must be at least 6 characters long');
-                    return;
-                }
+        if (password.length < 6) {
+            throw new Error('Password must be at least 6 characters long');
+        }
 
-                // Validation: Password and confirm password match
-                if (password !== confirmPassword) {
-                    reject('Passwords do not match');
-                    return;
-                }
+        if (password !== confirmPassword) {
+            throw new Error('Passwords do not match');
+        }
 
-                // Validation: Email format
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    reject('Please enter a valid email address');
-                    return;
-                }
+        try {
+            const { data } = await api.post('/auth/register', { name, email, password });
 
-                // Validation: Check if user already exists
-                const registeredUsers = JSON.parse(localStorage.getItem('skillhub_registered_users') || '[]');
-                if (registeredUsers.find(u => u.email === email)) {
-                    reject('Email already registered. Please login or use a different email.');
-                    return;
-                }
+            const registeredUser = {
+                id: data.id,
+                name: data.name,
+                email: data.email,
+                role: data.role,
+                avatar: data.avatar || null,
+                token: data.token,
+            };
 
-                // Register new user - Store in localStorage
-                const newUser = {
-                    id: Date.now(),
-                    name,
-                    email,
-                    password, // In production, this should be hashed
-                    role: 'learner',
-                    createdAt: new Date().toISOString()
-                };
+            setUser(registeredUser);
+            localStorage.setItem('skillhub_user', JSON.stringify(registeredUser));
+            localStorage.setItem('skillhub_token', registeredUser.token);
 
-                registeredUsers.push(newUser);
-                localStorage.setItem('skillhub_registered_users', JSON.stringify(registeredUsers));
-
-                const mockUser = {
-                    id: newUser.id,
-                    name,
-                    email,
-                    role: 'learner',
-                    token: 'mock-jwt-token-' + Date.now(),
-                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`
-                };
-
-                setUser(mockUser);
-                localStorage.setItem('skillhub_user', JSON.stringify(mockUser));
-                localStorage.setItem('skillhub_token', mockUser.token);
-                resolve(mockUser);
-            }, 800);
-        });
+            return registeredUser;
+        } catch (error) {
+            throw new Error(error.response?.data?.error || error.message || 'Failed to create account');
+        }
     };
 
     const logout = () => {
