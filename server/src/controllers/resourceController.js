@@ -1,6 +1,10 @@
 const pool = require('../config/db');
 
 const ensureResourcesTable = async () => {
+  // Create resources table without an immediate foreign key constraint.
+  // Some hosted DBs may not have the `courses` table yet, which would
+  // cause CREATE TABLE ... FOREIGN KEY to fail. Using an index keeps
+  // referential usage possible without requiring the parent table.
   await pool.query(`
     CREATE TABLE IF NOT EXISTS resources (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -11,10 +15,23 @@ const ensureResourcesTable = async () => {
       file_type VARCHAR(100) NOT NULL,
       file_size INT NOT NULL,
       file_data LONGBLOB NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE SET NULL
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Ensure an index exists for course_id for faster lookups. Older MySQL
+  // versions don't support `IF NOT EXISTS` for CREATE INDEX, so run
+  // the statement and ignore duplicate-index errors.
+  try {
+    await pool.query('CREATE INDEX idx_resources_course ON resources(course_id)');
+  } catch (err) {
+    // ER_DUP_KEYNAME (1022) or ER_DUP_KEYNAME code indicates index already exists
+    if (err && (err.errno === 1022 || err.code === 'ER_DUP_KEYNAME' || err.errno === 1061)) {
+      // ignore
+    } else {
+      throw err;
+    }
+  }
 };
 
 const mapResourceRow = (row) => ({
@@ -43,7 +60,7 @@ const getResources = async (req, res) => {
 
     res.json(rows.map(mapResourceRow));
   } catch (error) {
-    console.error('Get resources error:', error.message);
+    console.error('Get resources error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -85,7 +102,7 @@ const createResource = async (req, res) => {
 
     res.status(201).json(mapResourceRow(rows[0]));
   } catch (error) {
-    console.error('Create resource error:', error.message);
+    console.error('Create resource error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -105,7 +122,7 @@ const downloadResource = async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="${resource.file_name}"`);
     res.send(resource.file_data);
   } catch (error) {
-    console.error('Download resource error:', error.message);
+    console.error('Download resource error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -122,7 +139,7 @@ const deleteResource = async (req, res) => {
 
     res.json({ message: 'Resource deleted successfully' });
   } catch (error) {
-    console.error('Delete resource error:', error.message);
+    console.error('Delete resource error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
