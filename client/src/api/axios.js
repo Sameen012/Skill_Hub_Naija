@@ -1,8 +1,29 @@
 import axios from 'axios';
 
-// Use VITE_API_URL when provided; in production default to Render backend URL.
-const defaultProdApi = 'https://skill-hub-naija.onrender.com/';
-const apiBaseURL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? defaultProdApi : 'http://localhost:5000/api');
+const normalizeApiBaseURL = (value) => {
+    if (!value) {
+        return value;
+    }
+
+    try {
+        const url = new URL(value, window.location.origin);
+        const pathname = url.pathname.replace(/\/$/, '');
+
+        if (!pathname.endsWith('/api')) {
+            url.pathname = `${pathname}/api`;
+        }
+
+        return url.toString().replace(/\/$/, '');
+    } catch (error) {
+        return value;
+    }
+};
+
+// Use VITE_API_URL when provided; otherwise default to the deployed backend.
+const defaultProdApi = 'https://skill-hub-naija.onrender.com';
+const apiBaseURL = normalizeApiBaseURL(
+    import.meta.env.VITE_API_URL || (import.meta.env.PROD ? defaultProdApi : 'http://localhost:5000')
+);
 
 const api = axios.create({
     baseURL: apiBaseURL,
