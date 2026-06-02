@@ -6,16 +6,13 @@ const initDB = async () => {
   try {
     const schemaPath = path.join(__dirname, 'schema.sql');
     const schemaSql = fs.readFileSync(schemaPath, 'utf8');
-    const queries = schemaSql.split(';').filter(query => query.trim().length > 0);
 
-    for (const query of queries) {
-      await pool.query(query);
-    }
+    await pool.query(schemaSql);
 
-    console.log('✅ Database Tables Initialized Successfully');
+    console.log('✅ Database Initialized Successfully');
     process.exit(0);
   } catch (err) {
-    console.error('❌ Failed to Init DB:', err);
+    console.error('❌ DB Init Failed:', err.message);
     process.exit(1);
   }
 };

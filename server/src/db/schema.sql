@@ -14,10 +14,11 @@ CREATE TABLE IF NOT EXISTS courses (
     description TEXT,
     thumbnail TEXT,
     category VARCHAR(100),
-    type VARCHAR(50), 
-    price DECIMAL(10, 2) DEFAULT 0.00,
-    instructor VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    type VARCHAR(50),
+    price DECIMAL(10,2) DEFAULT 0.00,
+    instructor_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (instructor_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS modules (
@@ -33,9 +34,15 @@ CREATE TABLE IF NOT EXISTS enrollments (
     user_id INT NOT NULL,
     course_id INT NOT NULL,
     progress INT DEFAULT 0,
-    completed_modules JSON, 
+    completed_modules JSON,
     enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, course_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
+
+-- INDEXES
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_modules_course ON modules(course_id);
+CREATE INDEX idx_enrollments_user ON enrollments(user_id);
+CREATE INDEX idx_enrollments_course ON enrollments(course_id);
