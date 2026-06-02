@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Use VITE_API_URL when provided; in production default to Render backend URL.
-const defaultProdApi = 'https://skill-hub-naija.onrender.com/api';
+const defaultProdApi = 'https://skill-hub-naija.onrender.com/';
 const apiBaseURL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? defaultProdApi : 'http://localhost:5000/api');
 
 const api = axios.create({
