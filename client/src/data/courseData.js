@@ -39,7 +39,7 @@ export const COURSES = [
         category: 'Design',
         thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
         description: 'Learn how to design beautiful interfaces and user experiences. Covers Figma, wireframing, and prototyping.',
-        price: 49,
+        price: 0,
         type: 'self-paced',
         instructor: 'Gary Simon',
         modules: [
@@ -54,7 +54,7 @@ export const COURSES = [
         thumbnail: 'https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
         description: 'Take your CSS skills to the next level with animations, flexbox, grid, and Sass pre-processing.',
         price: 0,
-        type: 'live',
+        type: 'self-paced',
         instructor: 'Jonas Schmedtmann',
         modules: [
             { id: 301, title: "CSS Grid Crash Course", duration: "25:00", videoUrl: "https://www.youtube.com/embed/jV8B24rSN5o" }
@@ -66,7 +66,7 @@ export const COURSES = [
         category: 'CS',
         thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
         description: 'A comprehensive guide to using Python for data analysis, visualization, and machine learning.',
-        price: 89,
+        price: 0,
         type: 'self-paced',
         instructor: 'Jose Portilla',
         modules: [
