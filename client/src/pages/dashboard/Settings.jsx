@@ -38,7 +38,7 @@ const Settings = () => {
         <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100 flex">
             <Sidebar />
 
-            <main className="flex-1 ml-64 p-8">
+            <main className="flex-1 lg:ml-64 p-8">
                 <header className="mb-8">
                     <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Account Settings</h1>
                     <p className="text-slate-500 dark:text-slate-300">Manage your profile and preferences.</p>

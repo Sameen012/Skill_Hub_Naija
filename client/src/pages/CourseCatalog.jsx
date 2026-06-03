@@ -1,12 +1,16 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 import Navbar from '../components/layout/Navbar.jsx';
 import Button from '../components/common/Button.jsx';
 import { getAllCourses, getCourseById } from '../utils/courseStore.js';
+import { getStoredEnrollments, setStoredEnrollments, getCurrentUser } from '../utils/storage.js';
+import { fetchMyEnrollments, createEnrollment } from '../api/enrollments.js';
 import { Search, Filter, PlayCircle, Video, BookOpen, CheckCircle } from 'lucide-react';
 
 const CourseCatalog = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [filter, setFilter] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -14,25 +18,47 @@ const CourseCatalog = () => {
     const [enrolledIds, setEnrolledIds] = useState([]);
     const [courses, setCourses] = useState([]);
 
-    // 1. Load enrolled courses from LocalStorage on mount
+    // 1. Load enrolled courses on mount and sync with backend when logged in
     useEffect(() => {
-        const storedEnrollments = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
-        setEnrolledIds(storedEnrollments);
-        setCourses(getAllCourses());
-    }, []);
+        const loadEnrollments = async () => {
+            setCourses(getAllCourses());
+
+            if (user?.email) {
+                try {
+                    const serverEnrollments = await fetchMyEnrollments();
+                    setStoredEnrollments(serverEnrollments);
+                    setEnrolledIds(serverEnrollments);
+                    return;
+                } catch (error) {
+                    console.error('Failed to fetch enrollments:', error);
+                }
+            }
+
+            setEnrolledIds(getStoredEnrollments());
+        };
+
+        loadEnrollments();
+    }, [user]);
 
     // 2. Handle Enrollment Logic
-    const handleEnroll = (courseId) => {
-        // Add to local storage
-        const updatedEnrollments = [...enrolledIds, courseId];
-        localStorage.setItem('enrolledCourses', JSON.stringify(updatedEnrollments));
+    const handleEnroll = async (courseId) => {
+        const updatedEnrollments = Array.from(new Set([...enrolledIds, courseId]));
+        setStoredEnrollments(updatedEnrollments);
         setEnrolledIds(updatedEnrollments);
 
-        const currentUser = JSON.parse(localStorage.getItem('skillhub_user') || 'null');
-        const enrollmentRecords = JSON.parse(localStorage.getItem('skillhub_enrollment_records') || '[]');
+        const currentUser = getCurrentUser();
         const course = getCourseById(courseId);
 
+        if (currentUser?.email) {
+            try {
+                await createEnrollment(courseId);
+            } catch (error) {
+                console.error('Enrollment API failed:', error);
+            }
+        }
+
         if (currentUser && course) {
+            const enrollmentRecords = JSON.parse(localStorage.getItem('skillhub_enrollment_records') || '[]');
             const alreadyTracked = enrollmentRecords.some(
                 (record) => record.courseId === courseId && record.userEmail === currentUser.email,
             );

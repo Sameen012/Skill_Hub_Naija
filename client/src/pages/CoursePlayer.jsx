@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { getCourseById } from '../utils/courseStore.js';
+import { getStoredEnrollments, setStoredEnrollments, getStoredProgress, setStoredProgress } from '../utils/storage.js';
+import { createEnrollment } from '../api/enrollments.js';
 import { 
     PlayCircle, CheckCircle, ChevronLeft, ChevronRight, Menu, Lock, Loader2, Clock,
     FileText, Download, Video, MessageSquare, X, Info, AlertCircle
@@ -30,11 +33,10 @@ const CoursePlayer = () => {
     // Load Progress from LocalStorage
     const [completedLessons, setCompletedLessons] = useState(() => {
         try {
-            const saved = localStorage.getItem(`progress_${courseId}`);
-            return saved ? JSON.parse(saved) : [];
-        } catch (error) { 
+            return getStoredProgress(courseId);
+        } catch (error) {
             console.error("Error loading progress:", error);
-            return []; 
+            return [];
         }
     });
 
@@ -55,10 +57,12 @@ const CoursePlayer = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    const { user } = useAuth();
+
     // Load Course Data & Auto-Enrollment
     useEffect(() => {
         setLoading(true);
-        const loadTimer = setTimeout(() => {
+        const loadTimer = setTimeout(async () => {
             const foundCourse = getCourseById(courseId);
             setCourse(foundCourse);
             
@@ -70,11 +74,19 @@ const CoursePlayer = () => {
                 
                 // Auto-Enrollment Logic
                 try {
-                    const enrolled = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
+                    const enrolled = getStoredEnrollments();
                     if (!enrolled.includes(courseId)) {
                         const newList = [...enrolled, courseId];
-                        localStorage.setItem('enrolledCourses', JSON.stringify(newList));
+                        setStoredEnrollments(newList);
                         console.log("User auto-enrolled in course:", courseId);
+
+                        if (user?.email) {
+                            try {
+                                await createEnrollment(courseId);
+                            } catch (error) {
+                                console.error('Enrollment API failed:', error);
+                            }
+                        }
                     }
                 } catch (e) {
                     console.error("Auto-enroll failed:", e);
@@ -83,12 +95,12 @@ const CoursePlayer = () => {
             setLoading(false);
         }, 800); // Simulate API delay
         return () => clearTimeout(loadTimer);
-    }, [courseId]);
+    }, [courseId, user]);
 
     // Save Progress to LocalStorage
     useEffect(() => {
         if (courseId) {
-            localStorage.setItem(`progress_${courseId}`, JSON.stringify(completedLessons));
+            setStoredProgress(courseId, completedLessons);
         }
     }, [completedLessons, courseId]);
 
