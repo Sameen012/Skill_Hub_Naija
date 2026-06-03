@@ -113,7 +113,7 @@ const CertificateModal = ({ cert, studentName, onClose, autoPrint }) => {
     <img
         src={MySignature}
         alt="Training Team Signature"
-        className="h-14 mx-auto object-contain mt-4"
+        className="h-12 object-contain -mb-2"
     />
 </div>
 
@@ -143,7 +143,7 @@ const CertificateModal = ({ cert, studentName, onClose, autoPrint }) => {
         <img
     src={MySignature}
     alt="Saminu Aminu Signature"
-    className="h-14 mx-auto object-contain mt-4"
+    className="h-12 object-contain -mb-2"
 />
     </div>
 
