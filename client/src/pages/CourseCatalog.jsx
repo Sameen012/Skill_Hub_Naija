@@ -42,19 +42,24 @@ const CourseCatalog = () => {
 
     // 2. Handle Enrollment Logic
     const handleEnroll = async (courseId) => {
-        const updatedEnrollments = Array.from(new Set([...enrolledIds, courseId]));
-        setStoredEnrollments(updatedEnrollments);
-        setEnrolledIds(updatedEnrollments);
-
         const currentUser = getCurrentUser();
         const course = getCourseById(courseId);
+        let updatedEnrollments = Array.from(new Set([...enrolledIds, courseId]));
 
         if (currentUser?.email) {
             try {
                 await createEnrollment(courseId);
+                setStoredEnrollments(updatedEnrollments);
+                setEnrolledIds(updatedEnrollments);
             } catch (error) {
                 console.error('Enrollment API failed:', error);
+                // Keep local enrollment state so user can continue on this device even if backend fails
+                setStoredEnrollments(updatedEnrollments);
+                setEnrolledIds(updatedEnrollments);
             }
+        } else {
+            setStoredEnrollments(updatedEnrollments);
+            setEnrolledIds(updatedEnrollments);
         }
 
         if (currentUser && course) {

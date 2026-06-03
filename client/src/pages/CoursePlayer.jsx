@@ -77,8 +77,6 @@ const CoursePlayer = () => {
                     const enrolled = getStoredEnrollments();
                     if (!enrolled.includes(courseId)) {
                         const newList = [...enrolled, courseId];
-                        setStoredEnrollments(newList);
-                        console.log("User auto-enrolled in course:", courseId);
 
                         if (user?.email) {
                             try {
@@ -87,6 +85,9 @@ const CoursePlayer = () => {
                                 console.error('Enrollment API failed:', error);
                             }
                         }
+
+                        setStoredEnrollments(newList);
+                        console.log("User auto-enrolled in course:", courseId);
                     }
                 } catch (e) {
                     console.error("Auto-enroll failed:", e);
