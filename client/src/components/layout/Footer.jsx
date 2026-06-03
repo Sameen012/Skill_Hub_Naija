@@ -84,17 +84,29 @@ const Footer = () => {
   );
 };
 
-const SocialIcon = ({ icon, href = '#', ariaLabel = '' }) => (
-  <a
-    href={href}
-    aria-label={ariaLabel}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all duration-300 dark:bg-slate-800"
-  >
-    {icon}
-  </a>
-);
+const SocialIcon = ({ icon, href = '#', ariaLabel = '' }) => {
+  const handleClick = (event) => {
+    if (!href || href === '#') {
+      event.preventDefault();
+      return;
+    }
+
+    // Direct navigation is more reliable for some mobile browsers/webviews.
+    event.preventDefault();
+    window.location.assign(href);
+  };
+
+  return (
+    <a
+      href={href}
+      onClick={handleClick}
+      aria-label={ariaLabel}
+      className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all duration-300 active:scale-95 touch-manipulation dark:bg-slate-800"
+    >
+      {icon}
+    </a>
+  );
+};
 
 const FooterLink = ({ to, text }) => (
   <li>
