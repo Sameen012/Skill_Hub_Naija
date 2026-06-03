@@ -109,7 +109,13 @@ const CertificateModal = ({ cert, studentName, onClose, autoPrint }) => {
 
                         {/* Instructor Sig */}
     <div className="text-center w-48">
-    <div className="border-b-2 border-gray-300 pb-2 mb-2"></div>
+  <div className="border-b-2 border-gray-300 pb-2 mb-2">
+    <img
+        src={MySignature}
+        alt="Training Team Signature"
+        className="h-14 mx-auto object-contain mt-4"
+    />
+</div>
 
     <p className="font-semibold text-slate-700 text-sm">
         SkillHub Naija
@@ -135,10 +141,10 @@ const CertificateModal = ({ cert, studentName, onClose, autoPrint }) => {
 <div className="text-center w-48">
     <div className="border-b-2 border-gray-300 pb-2 mb-2">
         <img
-            src={MySignature}
-            alt="Saminu Aminu Signature"
-            className="h-14 mx-auto object-contain"
-        />
+    src={MySignature}
+    alt="Saminu Aminu Signature"
+    className="h-14 mx-auto object-contain mt-4"
+/>
     </div>
 
     <p className="font-semibold text-blue-900 text-sm">
