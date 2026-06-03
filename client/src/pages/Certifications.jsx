@@ -5,6 +5,7 @@ import { getCourseById } from '../utils/courseStore.js';
 import { Award, Download, X, Calendar, CheckCircle, Lock, Eye, Printer } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+import MySignature from './public/My_Signature.png';
 
 // --- CERTIFICATE MODAL COMPONENT ---
 const CertificateModal = ({ cert, studentName, onClose, autoPrint }) => {
@@ -134,7 +135,7 @@ const CertificateModal = ({ cert, studentName, onClose, autoPrint }) => {
 <div className="text-center w-48">
     <div className="border-b-2 border-gray-300 pb-2 mb-2">
         <img
-            src="/My_Signature.png"
+            src={MySignature}
             alt="Saminu Aminu Signature"
             className="h-14 mx-auto object-contain"
         />
