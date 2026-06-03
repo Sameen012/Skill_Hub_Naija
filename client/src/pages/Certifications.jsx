@@ -2,50 +2,24 @@ import React, { useState, useEffect } from 'react';
 // FIX: Changed "../../" to "../" because this file is in src/pages/
 import Sidebar from '../components/layout/Sidebar';
 import { getCourseById } from '../utils/courseStore.js';
-import { getStoredEnrollments, getStoredProgress, setStoredEnrollments } from '../utils/storage.js';
-import { fetchMyEnrollments } from '../api/enrollments.js';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
 import { Award, Download, X, Calendar, CheckCircle, Lock, Eye, Printer } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import MySignature from './public/My_Signature.png';
 
 // --- CERTIFICATE MODAL COMPONENT ---
-const CertificateModal = ({ cert, studentName, onClose, autoDownload }) => {
-    const downloadPDF = async () => {
-        const element = document.getElementById('printable-cert');
-        if (!element) return;
+const CertificateModal = ({ cert, studentName, onClose, autoPrint }) => {
 
-        const canvas = await html2canvas(element, {
-            scale: 2,
-            backgroundColor: '#ffffff',
-            useCORS: true,
-        });
-
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
-        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const imgProps = pdf.getImageProperties(imgData);
-        const pxToMm = (px) => (px * 25.4) / 96;
-        const imgWidthMm = pxToMm(imgProps.width);
-        const imgHeightMm = pxToMm(imgProps.height);
-        const ratio = Math.min(pageWidth / imgWidthMm, pageHeight / imgHeightMm);
-        const width = imgWidthMm * ratio;
-        const height = imgHeightMm * ratio;
-
-        pdf.addImage(imgData, 'JPEG', (pageWidth - width) / 2, (pageHeight - height) / 2, width, height);
-        pdf.save(`${cert.title.replace(/[^a-zA-Z0-9-_]/g, '_')}_Certificate.pdf`);
-    };
-
+    // Auto-trigger print view if "Download" was clicked
     useEffect(() => {
-        if (!autoDownload) return;
-        const timer = setTimeout(() => {
-            downloadPDF();
-        }, 500);
-        return () => clearTimeout(timer);
-    }, [autoDownload, cert.title]);
+        if (autoPrint) {
+            // Small delay to ensure styles are loaded
+            const timer = setTimeout(() => {
+                window.print();
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+    }, [autoPrint]);
 
     return (
         // Modal Container
@@ -53,12 +27,14 @@ const CertificateModal = ({ cert, studentName, onClose, autoDownload }) => {
 
             {/* Close / Action Buttons (Hidden during Print) */}
             <div className="fixed top-6 right-6 flex gap-4 print:hidden z-50">
-                <button
-                    onClick={downloadPDF}
-                    className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-transform active:scale-95"
-                >
-                    <Download size={20} /> Download PDF
-                </button>
+                {!autoPrint && (
+                    <button
+                        onClick={() => window.print()}
+                        className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-transform active:scale-95"
+                    >
+                        <Download size={20} /> Download PDF
+                    </button>
+                )}
                 <button
                     onClick={onClose}
                     className="p-3 bg-white/10 text-white rounded-full hover:bg-red-600 transition-colors backdrop-blur-md"
@@ -70,8 +46,8 @@ const CertificateModal = ({ cert, studentName, onClose, autoDownload }) => {
             {/* --- CERTIFICATE CANVAS --- */}
             <div
                 id="printable-cert"
-                className="relative bg-white text-gray-900 shadow-2xl overflow-hidden w-full max-w-5xl flex flex-col mx-auto rounded-xl print:rounded-none print:shadow-none"
-                style={{ fontFamily: "'Times New Roman', serif", aspectRatio: '3 / 4' }}
+                className="relative bg-white text-gray-900 shadow-2xl overflow-hidden w-full max-w-5xl aspect-[1.414/1] flex flex-col mx-auto rounded-xl print:rounded-none print:shadow-none"
+                style={{ fontFamily: "'Times New Roman', serif" }}
             >
                 {/* Ornamental Border */}
                 <div className="absolute inset-3 border-[6px] border-double border-blue-900/20 pointer-events-none"></div>
@@ -212,7 +188,7 @@ const CertificateModal = ({ cert, studentName, onClose, autoDownload }) => {
                         width: 100vw;
                         height: 100vh;
                         margin: 0;
-                        padding: 20mm !important; /* Add padding for printer margins */
+                        padding: 40px !important; /* Add padding for printer margins */
                         border: none;
                         box-shadow: none;
                         border-radius: 0;
@@ -224,9 +200,9 @@ const CertificateModal = ({ cert, studentName, onClose, autoDownload }) => {
                         print-color-adjust: exact;
                     }
                     
-                    /* Set paper size to Portrait */
+                    /* Set paper size to Landscape */
                     @page { 
-                        size: A4 portrait; 
+                        size: landscape; 
                         margin: 0; 
                     }
                 }
@@ -243,50 +219,36 @@ const Certifications = () => {
     const [modalData, setModalData] = useState(null);
 
     useEffect(() => {
-        const loadEnrollments = async () => {
-            let enrolledIds = getStoredEnrollments();
+        const enrolledIds = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
 
-            if (user?.email) {
-                try {
-                    const serverEnrollments = await fetchMyEnrollments();
-                    setStoredEnrollments(serverEnrollments);
-                    enrolledIds = serverEnrollments;
-                } catch (error) {
-                    console.error('Failed to sync enrollments:', error);
-                }
+        const qualifiedCourses = enrolledIds.map(id => {
+            const course = getCourseById(id);
+            if(!course) return null;
+
+            const completedLessons = JSON.parse(localStorage.getItem(`progress_${id}`) || '[]');
+            const totalModules = course.modules ? course.modules.length : 0;
+
+            // Progress logic (PDF course ID 6 manual override)
+            const progress = totalModules > 0
+                ? Math.round((completedLessons.length / totalModules) * 100)
+                : (id === 6 ? 100 : 0);
+
+            // Only show if >= 80%
+            if (progress >= 80) {
+                return {
+                    ...course,
+                    issueDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+                    grade: `${progress}%`
+                };
             }
+            return null;
+        }).filter(Boolean);
 
-            const qualifiedCourses = enrolledIds.map(id => {
-                const course = getCourseById(id);
-                if(!course) return null;
+        setEarnedCertificates(qualifiedCourses);
+    }, []);
 
-                const completedLessons = getStoredProgress(id);
-                const totalModules = course.modules ? course.modules.length : 0;
-
-                // Progress logic (PDF course ID 6 manual override)
-                const progress = totalModules > 0
-                    ? Math.round((completedLessons.length / totalModules) * 100)
-                    : (id === 6 ? 100 : 0);
-
-                // Only show if >= 80%
-                if (progress >= 80) {
-                    return {
-                        ...course,
-                        issueDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-                        grade: `${progress}%`
-                    };
-                }
-                return null;
-            }).filter(Boolean);
-
-            setEarnedCertificates(qualifiedCourses);
-        };
-
-        loadEnrollments();
-    }, [user]);
-
-    const openCertificate = (cert, autoDownload = false) => {
-        setModalData({ cert, autoDownload });
+    const openCertificate = (cert, autoPrint = false) => {
+        setModalData({ cert, autoPrint });
     };
 
     return (
@@ -294,7 +256,7 @@ const Certifications = () => {
             <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100 flex">
                 <Sidebar />
 
-                <main className="lg:ml-64 w-full lg:w-[calc(100%-16rem)] p-8">
+                <main className="ml-64 w-[calc(100%-16rem)] p-8">
                     <div className="mb-8">
                         <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white">My Certifications</h1>
                         <p className="text-slate-500 dark:text-slate-300">View and download your earned credentials (80% completion required).</p>
@@ -358,7 +320,7 @@ const Certifications = () => {
                 <CertificateModal
                     cert={modalData.cert}
                     studentName={user?.name || "Student Name"}
-                    autoDownload={modalData.autoDownload}
+                    autoPrint={modalData.autoPrint}
                     onClose={() => setModalData(null)}
                 />
             )}

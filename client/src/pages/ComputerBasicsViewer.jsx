@@ -15,7 +15,7 @@ const ComputerBasicsViewer = () => {
             {/* Main Navigation Sidebar */}
             <Sidebar />
 
-            <div className="lg:ml-64 w-full flex flex-col md:flex-row h-screen overflow-hidden">
+            <div className="ml-64 w-full flex flex-col md:flex-row h-screen overflow-hidden">
 
                 {/* Internal Topic Sidebar */}
                 <aside className={`flex w-full flex-shrink-0 flex-col border-r border-slate-200 bg-white z-20 dark:border-slate-800 dark:bg-slate-900 md:w-80 ${isTopicMenuOpen ? 'fixed inset-0 md:static' : 'hidden md:flex'}`}>

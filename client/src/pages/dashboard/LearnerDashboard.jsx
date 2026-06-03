@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Sidebar from '../../components/layout/Sidebar'; // Ensure you created Sidebar.jsx
 import { getCourseById } from '../../utils/courseStore.js';
-import { getStoredEnrollments, getStoredProgress, setStoredEnrollments } from '../../utils/storage.js';
-import { fetchMyEnrollments } from '../../api/enrollments.js';
 import { 
     Clock, 
     CheckCircle, 
@@ -36,59 +34,47 @@ const LearnerDashboard = () => {
 
     // --- EFFECT: Load Courses & Calculate Stats ---
     useEffect(() => {
-        const loadEnrollments = async () => {
-            let enrolledIds = getStoredEnrollments();
+        // 1. Get list of enrolled IDs from LocalStorage
+        const enrolledIds = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
 
-            if (user?.email) {
-                try {
-                    const serverEnrollments = await fetchMyEnrollments();
-                    setStoredEnrollments(serverEnrollments);
-                    enrolledIds = serverEnrollments;
-                } catch (error) {
-                    console.error('Failed to sync enrollments:', error);
-                }
+        // 2. Map IDs to Real Course Data & Calculate Progress
+        const courses = enrolledIds.map(id => {
+            const courseData = getCourseById(id);
+            if (!courseData) return null;
+
+            // Get progress from LocalStorage
+            const completedLessons = JSON.parse(localStorage.getItem(`progress_${id}`) || '[]');
+            const totalModules = courseData.modules ? courseData.modules.length : 0;
+            
+            // --- PDF COURSE LOGIC (ID 6) ---
+            // If it's the Computer Basics PDF course (ID 6), we mark it 100% complete automatically
+            // otherwise, calculate based on video modules completed.
+            let progressPercent = 0;
+            if (courseData.id === 6) {
+                progressPercent = 100; 
+            } else if (totalModules > 0) {
+                progressPercent = Math.round((completedLessons.length / totalModules) * 100);
             }
 
-            // 2. Map IDs to Real Course Data & Calculate Progress
-            const courses = enrolledIds.map(id => {
-                const courseData = getCourseById(id);
-                if (!courseData) return null;
+            return { 
+                ...courseData, 
+                progress: progressPercent 
+            };
+        }).filter(Boolean); // Remove any nulls (courses not found)
 
-                // Get progress from LocalStorage
-                const completedLessons = getStoredProgress(id);
-                const totalModules = courseData.modules ? courseData.modules.length : 0;
-                
-                // --- PDF COURSE LOGIC (ID 6) ---
-                // If it's the Computer Basics PDF course (ID 6), we mark it 100% complete automatically
-                // otherwise, calculate based on video modules completed.
-                let progressPercent = 0;
-                if (courseData.id === 6) {
-                    progressPercent = 100; 
-                } else if (totalModules > 0) {
-                    progressPercent = Math.round((completedLessons.length / totalModules) * 100);
-                }
+        setEnrolledCourses(courses);
 
-                return { 
-                    ...courseData, 
-                    progress: progressPercent 
-                };
-            }).filter(Boolean); // Remove any nulls (courses not found)
+        // 3. Calculate Dashboard Stats
+        const completedCount = courses.filter(c => c.progress >= 100).length;
+        const certCount = courses.filter(c => c.progress >= 80).length; // 80% required for certificate
 
-            setEnrolledCourses(courses);
+        setStats({
+            inProgress: courses.length - completedCount,
+            completed: completedCount,
+            certificates: certCount
+        });
 
-            // 3. Calculate Dashboard Stats
-            const completedCount = courses.filter(c => c.progress >= 100).length;
-            const certCount = courses.filter(c => c.progress >= 80).length; // 80% required for certificate
-
-            setStats({
-                inProgress: courses.length - completedCount,
-                completed: completedCount,
-                certificates: certCount
-            });
-        };
-
-        loadEnrollments();
-    }, [user]);
+    }, []);
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100 flex flex-col lg:flex-row">
