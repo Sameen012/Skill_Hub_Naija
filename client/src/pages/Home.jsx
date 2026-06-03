@@ -27,9 +27,9 @@ const Home = () => {
                         </div>
                         
                         {/* Responsive Typography */}
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
-                            <span className="great-vibes block">Master New Skills</span>
-                            <span className="great-vibes block text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-white">For a Better Future</span>
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-none pb-1 overflow-visible">
+                            <span className="great-vibes block whitespace-nowrap leading-none text-[clamp(3rem,7vw,5rem)] sm:text-[clamp(3.5rem,6vw,5.5rem)]">Master New Skills</span>
+                            <span className="great-vibes block whitespace-nowrap leading-none text-[clamp(3rem,7vw,5rem)] sm:text-[clamp(3.5rem,6vw,5.5rem)] text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-white">For a Better Future</span>
                         </h1>
                         
                         <p className="text-base md:text-lg text-blue-100 max-w-xl mx-auto lg:mx-0 leading-relaxed">

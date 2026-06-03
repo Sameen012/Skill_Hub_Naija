@@ -21,7 +21,11 @@ const Footer = () => {
                 ariaLabel="Skill Hub Facebook"
               />
               <SocialIcon icon={<FaTwitter />} href="#" ariaLabel="Twitter" />
-              <SocialIcon icon={<FaLinkedin />} href="#" ariaLabel="LinkedIn" />
+              <SocialIcon
+                icon={<FaLinkedin />}
+                href="https://www.linkedin.com/in/saminu-aminu-ba86232ab/"
+                ariaLabel="Skill Hub LinkedIn"
+              />
               <SocialIcon
                 icon={<FaInstagram />}
                 href="https://www.instagram.com/_official_sameen/"
@@ -80,8 +84,14 @@ const Footer = () => {
   );
 };
 
-const SocialIcon = ({ icon }) => (
-  <a href="#" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all duration-300 dark:bg-slate-800">
+const SocialIcon = ({ icon, href = '#', ariaLabel = '' }) => (
+  <a
+    href={href}
+    aria-label={ariaLabel}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all duration-300 dark:bg-slate-800"
+  >
     {icon}
   </a>
 );
