@@ -50,7 +50,7 @@ const Footer = () => {
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3">
                 <FaMapMarkerAlt className="mt-1 text-blue-500" />
-                <span>Illela Road,<br />Asara , Sokoto State</span>
+                <span>Sokoto State, <br /> Nigeria</span>
               </li>
               <li className="flex items-center gap-3">
                 <FaEnvelope className="text-blue-500" />
