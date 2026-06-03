@@ -36,4 +36,11 @@
 	.theme-label {
 		@apply block text-sm font-medium text-slate-700 dark:text-slate-300;
 	}
+
+	/* Great Vibes heading style for hero */
+	.great-vibes {
+		font-family: 'Great Vibes', cursive;
+		letter-spacing: -0.5px;
+		line-height: 0.95;
+	}
 }

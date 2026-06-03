@@ -28,10 +28,8 @@ const Home = () => {
                         
                         {/* Responsive Typography */}
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
-                            Master New Skills <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-white">
-                                For a Better Future
-                            </span>
+                            <span className="great-vibes block">Master New Skills</span>
+                            <span className="great-vibes block text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-white">For a Better Future</span>
                         </h1>
                         
                         <p className="text-base md:text-lg text-blue-100 max-w-xl mx-auto lg:mx-0 leading-relaxed">
