@@ -107,12 +107,17 @@ const CertificateModal = ({ cert, studentName, onClose, autoPrint }) => {
                     <div className="w-full flex justify-between items-end mt-12 px-10">
 
                         {/* Instructor Sig */}
-                        <div className="text-center w-48">
-                            <div className="font-handwriting text-2xl text-blue-800 transform -rotate-2 border-b-2 border-gray-300 pb-2 mb-2" style={{ fontFamily: 'cursive' }}>
-                                {cert.instructor}
-                            </div>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Lead Instructor</p>
-                        </div>
+    <div className="text-center w-48">
+    <div className="border-b-2 border-gray-300 pb-2 mb-2"></div>
+
+    <p className="font-semibold text-slate-700 text-sm">
+        SkillHub Naija
+    </p>
+
+    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+        Training Team
+    </p>
+          </div>
 
                         {/* Gold Seal */}
                         <div className="relative -mb-6">
@@ -125,13 +130,24 @@ const CertificateModal = ({ cert, studentName, onClose, autoPrint }) => {
                             </div>
                         </div>
 
-                        {/* Director Sig */}
-                        <div className="text-center w-48">
-                            <div className="font-handwriting text-2xl text-blue-800 transform -rotate-2 border-b-2 border-gray-300 pb-2 mb-2" style={{ fontFamily: 'cursive' }}>
-                                Saminu Aminu
-                            </div>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Director, SkillHub</p>
-                        </div>
+ {/* Director Sig */}
+<div className="text-center w-48">
+    <div className="border-b-2 border-gray-300 pb-2 mb-2">
+        <img
+            src="/My_Signature.png"
+            alt="Saminu Aminu Signature"
+            className="h-14 mx-auto object-contain"
+        />
+    </div>
+
+    <p className="font-semibold text-blue-900 text-sm">
+        Saminu Aminu
+    </p>
+
+    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+        Director, SkillHub Naija
+    </p>
+</div>
 
                     </div>
                 </div>
