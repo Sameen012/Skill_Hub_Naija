@@ -220,9 +220,9 @@ const LearnerDashboard = () => {
                                 </div>
                                 <div className="p-5">
                                     <h4 className="mb-1 font-bold text-slate-900 transition-colors group-hover:text-purple-600 dark:text-white">React Hooks Deep Dive</h4>
-                                    <p className="mb-3 text-sm text-slate-500 dark:text-slate-300">with Senior Dev. Ali</p>
+                                    <p className="mb-3 text-sm text-slate-500 dark:text-slate-300">with Sameen</p>
                                     <div className="mb-4 flex items-center gap-2 rounded border border-slate-100 bg-slate-50 p-2 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
-                                        <Clock size={14} className="text-purple-500" /> Dec 25, 10:00 AM (WAT)
+                                        <Clock size={14} className="text-purple-500" /> Coming Soon (WAT)
                                     </div>
                                     <button className="w-full py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors shadow-sm shadow-purple-200">
                                         Set Reminder
