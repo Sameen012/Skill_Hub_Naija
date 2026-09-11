@@ -74,7 +74,7 @@ const Contact = () => {
                                         <label className="text-sm font-semibold text-slate-600 dark:text-slate-300">Email Address</label>
                                         <input 
                                             type="email" 
-                                            placeholder="john@example.com" 
+                                            placeholder="you@example.com" 
                                             className="w-full rounded-lg border border-slate-200 px-4 py-3 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-500/20"
                                         />
                                     </div>

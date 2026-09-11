@@ -7,9 +7,11 @@ export default defineConfig({
         port: 5173,
         host: true
     },
+    esbuild: {
+        drop: ['console', 'debugger'],
+    },
     build: {
         // Optimize for mobile
-        minify: 'terser',
         sourcemap: false, // Disable sourcemaps in production
         rollupOptions: {
             output: {
@@ -21,10 +23,5 @@ export default defineConfig({
             }
         },
         chunkSizeWarningLimit: 500,
-        terserOptions: {
-            compress: {
-                drop_console: true, // Remove console.logs in production
-            }
-        }
     }
 })

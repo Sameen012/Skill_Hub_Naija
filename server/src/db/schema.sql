@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS courses (
     category VARCHAR(100),
     type VARCHAR(50),
     price DECIMAL(10,2) DEFAULT 0.00,
+    instructor VARCHAR(255),
     instructor_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (instructor_id) REFERENCES users(id) ON DELETE SET NULL

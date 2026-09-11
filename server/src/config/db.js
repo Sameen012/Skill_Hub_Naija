@@ -32,12 +32,15 @@ const databaseConfig = parseDatabaseUrl(process.env.DATABASE_URL) || {
     database: process.env.DB_NAME || 'skillhub_db',
 };
 
+const isRemote = databaseConfig.host !== 'localhost' && databaseConfig.host !== '127.0.0.1';
+
 const pool = mysql.createPool({
     ...databaseConfig,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
     multipleStatements: true,
+    ssl: process.env.DB_SSL === 'false' ? undefined : (isRemote ? { minVersion: 'TLSv1.2', rejectUnauthorized: true } : undefined),
     typeCast(field, next) {
         if (field.type === 'JSON') {
             try {
