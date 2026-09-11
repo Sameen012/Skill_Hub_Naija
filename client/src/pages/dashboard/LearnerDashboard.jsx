@@ -1,8 +1,9 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Sidebar from '../../components/layout/Sidebar'; // Ensure you created Sidebar.jsx
 import { getCourseById } from '../../utils/courseStore.js';
+import { getEnrolledCourseIds, getCourseProgress } from '../../utils/enrollmentStore.js';
 import { 
     Clock, 
     CheckCircle, 
@@ -34,21 +35,19 @@ const LearnerDashboard = () => {
 
     // --- EFFECT: Load Courses & Calculate Stats ---
     useEffect(() => {
-        // 1. Get list of enrolled IDs from LocalStorage
-        const enrolledIds = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
+        // 1. Get list of enrolled IDs for the current user
+        const enrolledIds = getEnrolledCourseIds(user);
 
         // 2. Map IDs to Real Course Data & Calculate Progress
         const courses = enrolledIds.map(id => {
             const courseData = getCourseById(id);
             if (!courseData) return null;
 
-            // Get progress from LocalStorage
-            const completedLessons = JSON.parse(localStorage.getItem(`progress_${id}`) || '[]');
+            // Get progress for this user from enrollment store
+            const completedLessons = getCourseProgress(id, user);
             const totalModules = courseData.modules ? courseData.modules.length : 0;
             
             // --- PDF COURSE LOGIC (ID 6) ---
-            // If it's the Computer Basics PDF course (ID 6), we mark it 100% complete automatically
-            // otherwise, calculate based on video modules completed.
             let progressPercent = 0;
             if (courseData.id === 6) {
                 progressPercent = 100; 
@@ -74,7 +73,7 @@ const LearnerDashboard = () => {
             certificates: certCount
         });
 
-    }, []);
+    }, [user]);
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100 flex flex-col lg:flex-row">

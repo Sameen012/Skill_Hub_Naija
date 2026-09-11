@@ -1,12 +1,15 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar.jsx';
 import Button from '../components/common/Button.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 import { getAllCourses, getCourseById } from '../utils/courseStore.js';
+import { getEnrolledCourseIds, enrollInCourse } from '../utils/enrollmentStore.js';
 import { Search, Filter, PlayCircle, Video, BookOpen, CheckCircle } from 'lucide-react';
 
 const CourseCatalog = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [filter, setFilter] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -14,41 +17,22 @@ const CourseCatalog = () => {
     const [enrolledIds, setEnrolledIds] = useState([]);
     const [courses, setCourses] = useState([]);
 
-    // 1. Load enrolled courses from LocalStorage on mount
+    // 1. Load enrolled courses for current user on mount or when user changes
     useEffect(() => {
-        const storedEnrollments = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
+        const storedEnrollments = getEnrolledCourseIds(user);
         setEnrolledIds(storedEnrollments);
         setCourses(getAllCourses());
-    }, []);
+    }, [user]);
 
     // 2. Handle Enrollment Logic
     const handleEnroll = (courseId) => {
-        // Add to local storage
-        const updatedEnrollments = [...enrolledIds, courseId];
-        localStorage.setItem('enrolledCourses', JSON.stringify(updatedEnrollments));
-        setEnrolledIds(updatedEnrollments);
-
-        const currentUser = JSON.parse(localStorage.getItem('skillhub_user') || 'null');
-        const enrollmentRecords = JSON.parse(localStorage.getItem('skillhub_enrollment_records') || '[]');
-        const course = getCourseById(courseId);
-
-        if (currentUser && course) {
-            const alreadyTracked = enrollmentRecords.some(
-                (record) => record.courseId === courseId && record.userEmail === currentUser.email,
-            );
-
-            if (!alreadyTracked) {
-                enrollmentRecords.unshift({
-                    id: `${courseId}-${currentUser.email}`,
-                    userName: currentUser.name,
-                    userEmail: currentUser.email,
-                    courseId,
-                    courseTitle: course.title,
-                    enrolledAt: new Date().toISOString(),
-                });
-                localStorage.setItem('skillhub_enrollment_records', JSON.stringify(enrollmentRecords));
-            }
+        if (!user) {
+            navigate('/login');
+            return;
         }
+
+        enrollInCourse(courseId, user);
+        setEnrolledIds(getEnrolledCourseIds(user));
 
         // Redirect to the correct page
         if (courseId === 6) {

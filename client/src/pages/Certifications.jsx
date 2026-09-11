@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 // FIX: Changed "../../" to "../" because this file is in src/pages/
 import Sidebar from '../components/layout/Sidebar';
 import { getCourseById } from '../utils/courseStore.js';
+import { getEnrolledCourseIds, getCourseProgress } from '../utils/enrollmentStore.js';
 import { Award, Download, X, Calendar, CheckCircle, Lock, Eye, Printer } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
@@ -219,13 +220,13 @@ const Certifications = () => {
     const [modalData, setModalData] = useState(null);
 
     useEffect(() => {
-        const enrolledIds = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
+        const enrolledIds = getEnrolledCourseIds(user);
 
         const qualifiedCourses = enrolledIds.map(id => {
             const course = getCourseById(id);
             if(!course) return null;
 
-            const completedLessons = JSON.parse(localStorage.getItem(`progress_${id}`) || '[]');
+            const completedLessons = getCourseProgress(id, user);
             const totalModules = course.modules ? course.modules.length : 0;
 
             // Progress logic (PDF course ID 6 manual override)
@@ -245,7 +246,7 @@ const Certifications = () => {
         }).filter(Boolean);
 
         setEarnedCertificates(qualifiedCourses);
-    }, []);
+    }, [user]);
 
     const openCertificate = (cert, autoPrint = false) => {
         setModalData({ cert, autoPrint });

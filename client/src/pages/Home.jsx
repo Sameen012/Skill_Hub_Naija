@@ -1,10 +1,13 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
+import { useAuth } from '../context/AuthContext.jsx';
 import { Target, Layers, Heart, Sparkles, ArrowRight, CheckCircle } from 'lucide-react';
 
 const Home = () => {
+    const { user } = useAuth();
+
     return (
         <div className="min-h-screen bg-slate-50 font-sans flex flex-col overflow-x-hidden text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
             <Navbar />
@@ -38,16 +41,26 @@ const Home = () => {
                         </p>
 
                         <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-                            <Link to="/register">
-                                <button className="px-6 py-3 md:px-8 md:py-4 bg-white text-blue-900 rounded-xl font-bold hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center gap-2">
-                                    Start Learning Free <ArrowRight size={20} />
-                                </button>
-                            </Link>
-                            <Link to="/login">
-                                <button className="px-6 py-3 md:px-8 md:py-4 bg-transparent border border-blue-300 text-white rounded-xl font-semibold hover:bg-white/10 transition-all">
-                                    Log in
-                                </button>
-                            </Link>
+                            {user ? (
+                                <Link to="/dashboard/learner">
+                                    <button className="px-6 py-3 md:px-8 md:py-4 bg-white text-blue-900 rounded-xl font-bold hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center gap-2">
+                                        Go to Dashboard <ArrowRight size={20} />
+                                    </button>
+                                </Link>
+                            ) : (
+                                <>
+                                    <Link to="/register">
+                                        <button className="px-6 py-3 md:px-8 md:py-4 bg-white text-blue-900 rounded-xl font-bold hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center gap-2">
+                                            Start Learning Free <ArrowRight size={20} />
+                                        </button>
+                                    </Link>
+                                    <Link to="/login">
+                                        <button className="px-6 py-3 md:px-8 md:py-4 bg-transparent border border-blue-300 text-white rounded-xl font-semibold hover:bg-white/10 transition-all">
+                                            Log in
+                                        </button>
+                                    </Link>
+                                </>
+                            )}
                             <Link to="/catalog">
                                 <button className="px-6 py-3 md:px-8 md:py-4 bg-transparent border border-blue-400 text-white rounded-xl font-bold hover:bg-blue-800/50 transition-all">
                                     Browse Courses

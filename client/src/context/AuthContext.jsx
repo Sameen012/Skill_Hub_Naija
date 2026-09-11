@@ -82,6 +82,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         localStorage.removeItem('skillhub_user');
         localStorage.removeItem('skillhub_token');
+        localStorage.removeItem('enrolledCourses');
     };
 
     return (

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 import { getCourseById } from '../utils/courseStore.js';
+import { getCourseProgress, saveCourseProgress, enrollInCourse } from '../utils/enrollmentStore.js';
 import { 
     PlayCircle, CheckCircle, ChevronLeft, ChevronRight, Menu, Lock, Loader2, Clock,
     FileText, Download, Video, MessageSquare, X, Info, AlertCircle
@@ -20,6 +22,7 @@ const CoursePlayer = () => {
     
     // UI Layout State
     // Sidebar defaults to OPEN only on screens larger than 1280px
+    const { user } = useAuth();
     const [isSidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1280); 
     const [activeTab, setActiveTab] = useState('overview');
     
@@ -27,16 +30,14 @@ const CoursePlayer = () => {
     const [canMarkComplete, setCanMarkComplete] = useState(false);
     const [timer, setTimer] = useState(0);
 
-    // Load Progress from LocalStorage
-    const [completedLessons, setCompletedLessons] = useState(() => {
-        try {
-            const saved = localStorage.getItem(`progress_${courseId}`);
-            return saved ? JSON.parse(saved) : [];
-        } catch (error) { 
-            console.error("Error loading progress:", error);
-            return []; 
+    // Load Progress for current user
+    const [completedLessons, setCompletedLessons] = useState([]);
+
+    useEffect(() => {
+        if (courseId) {
+            setCompletedLessons(getCourseProgress(courseId, user));
         }
-    });
+    }, [courseId, user]);
 
     // ============================
     // 2. EFFECTS (LOGIC)
@@ -55,7 +56,7 @@ const CoursePlayer = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Load Course Data & Auto-Enrollment
+    // Load Course Data
     useEffect(() => {
         setLoading(true);
         const loadTimer = setTimeout(() => {
@@ -68,29 +69,22 @@ const CoursePlayer = () => {
                     setActiveLesson(foundCourse.modules[0]);
                 }
                 
-                // Auto-Enrollment Logic
-                try {
-                    const enrolled = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
-                    if (!enrolled.includes(courseId)) {
-                        const newList = [...enrolled, courseId];
-                        localStorage.setItem('enrolledCourses', JSON.stringify(newList));
-                        console.log("User auto-enrolled in course:", courseId);
-                    }
-                } catch (e) {
-                    console.error("Auto-enroll failed:", e);
+                // Enroll current user if logged in
+                if (user) {
+                    enrollInCourse(courseId, user);
                 }
             }
             setLoading(false);
         }, 800); // Simulate API delay
         return () => clearTimeout(loadTimer);
-    }, [courseId]);
+    }, [courseId, user]);
 
-    // Save Progress to LocalStorage
+    // Save Progress for current user
     useEffect(() => {
-        if (courseId) {
-            localStorage.setItem(`progress_${courseId}`, JSON.stringify(completedLessons));
+        if (courseId && user) {
+            saveCourseProgress(courseId, completedLessons, user);
         }
-    }, [completedLessons, courseId]);
+    }, [completedLessons, courseId, user]);
 
     // Timer Logic (Wait 10s to Mark Complete)
     useEffect(() => {
