@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Sparkles } from 'lucide-react';
-import skillHubLogo from '../../assets/images/Skill_Hub_Naija.png';
+import skillHubLogo from '../../assets/images/Skill_Hub_Naija_concept1.jpg';
 import ThemeToggle from '../common/ThemeToggle.jsx';
 
 const AuthLayout = ({ children, title, subtitle }) => {

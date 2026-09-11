@@ -16,7 +16,7 @@ import {
     Award,
     Mail 
 } from 'lucide-react';
-import skillHubLogo from '../../assets/images/Skill_Hub_Naija.png';
+import skillHubLogo from '../../assets/images/Skill_Hub_Naija_concept1.jpg';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
