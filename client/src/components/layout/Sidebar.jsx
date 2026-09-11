@@ -14,7 +14,7 @@ import {
     ListChecks,
     Users,
 } from 'lucide-react';
-import skillHubLogo from '../../assets/images/Skill_Hub_Naija_concept1.jpg';
+import skillHubLogo from '../../assets/images/Skill_Hub_Naija.png';
 import ThemeToggle from '../common/ThemeToggle.jsx';
 
 const Sidebar = () => {
