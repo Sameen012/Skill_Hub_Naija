@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, FileText, Download, Sparkles } from 'lucide-react';
+import { ArrowLeft, FileText, Download } from 'lucide-react';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import api from '../../api/axios';
@@ -34,8 +34,7 @@ const Resources = () => {
         <div className="absolute top-0 right-0 w-64 h-64 bg-purple-700 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
 
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 bg-blue-800/60 border border-blue-700 rounded-full px-4 py-1.5 mb-4 backdrop-blur-sm">
-            <Sparkles size={16} className="text-yellow-400" />
+          <div className="inline-flex items-center bg-blue-800/60 border border-blue-700 rounded-full px-4 py-1.5 mb-4 backdrop-blur-sm">
             <span className="text-xs font-bold uppercase tracking-wider text-blue-100">Free Downloads</span>
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">

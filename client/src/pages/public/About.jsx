@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
-import { Target, Layers, Heart, Sparkles } from 'lucide-react';
+import { Target, Layers, Heart } from 'lucide-react';
 
 const About = () => {
     return (
@@ -15,8 +15,7 @@ const About = () => {
                 <div className="absolute top-0 right-0 w-64 h-64 bg-purple-700 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
                 
                 <div className="max-w-4xl mx-auto text-center relative z-10">
-                    <div className="inline-flex items-center gap-2 bg-blue-800/50 border border-blue-700 rounded-full px-4 py-1.5 mb-6 animate-fade-in-down">
-                        <Sparkles size={16} className="text-yellow-400" />
+                    <div className="inline-flex items-center bg-blue-800/50 border border-blue-700 rounded-full px-4 py-1.5 mb-6 animate-fade-in-down">
                         <span className="text-xs font-bold uppercase tracking-wider text-blue-100">Our Mission</span>
                     </div>
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-fade-in-up">

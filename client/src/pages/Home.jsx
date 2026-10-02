@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { useAuth } from '../context/AuthContext.jsx';
-import { Target, Layers, Heart, Sparkles, ArrowRight, CheckCircle } from 'lucide-react';
+import { Target, Layers, Heart, ArrowRight, CheckCircle } from 'lucide-react';
 
 const Home = () => {
     const { user } = useAuth();
@@ -24,8 +24,7 @@ const Home = () => {
                 <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12lg:gap-8 items-center relative z-10">
                     {/* Left Content */}
                     <div className="space-y-6 md:space-y-8 animate-fade-in-left text-center lg:text-left">
-                        <div className="inline-flex items-center gap-2 bg-blue-800/50 border border-blue-700 rounded-full px-4 py-1.5 backdrop-blur-sm">
-                            <Sparkles size={16} className="text-yellow-400" />
+                        <div className="inline-flex items-center bg-blue-800/50 border border-blue-700 rounded-full px-4 py-1.5 backdrop-blur-sm">
                             <span className="text-xs font-bold uppercase tracking-wider text-blue-100">Future of Learning</span>
                         </div>
                         
