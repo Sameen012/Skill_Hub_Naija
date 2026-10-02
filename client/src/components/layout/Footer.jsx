@@ -1,26 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaFacebook, FaTwitter, FaLinkedin, FaInstagram, FaEnvelope, FaMapMarkerAlt, FaPhone } from 'react-icons/fa';
-import skillHubLogo from '../../assets/images/Skill_Hub_Naija.png';
 
 const Footer = () => {
   return (
-    <footer className="mt-auto border-t border-slate-800 bg-slate-950 pt-16 pb-8 text-slate-300 transition-colors duration-300 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
+    <footer className="border-t border-slate-800 bg-slate-950 pt-16 pb-8 text-slate-300 transition-colors duration-300 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           
           {/* Brand Column */}
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-2 group inline-flex">
-              <img 
-                src={skillHubLogo} 
-                alt="SkillHub Logo" 
-                className="h-10 w-10 object-contain rounded-lg group-hover:scale-105 transition-transform duration-200"
-              />
-              <span className="text-2xl font-bold text-white tracking-tight">
-                SkillHub<span className="text-blue-500">NG</span>
-              </span>
-            </Link>
+            <h3 className="text-2xl font-bold text-white tracking-tight">Skill Hub<span className="text-blue-500">.</span></h3>
             <p className="text-sm leading-relaxed text-slate-400">
               Master the digital skills of tomorrow with our professional e-learning platform. We bridge the gap between theory and industry application.
             </p>
@@ -49,8 +39,8 @@ const Footer = () => {
             <h4 className="text-lg font-semibold text-white mb-6">Platform</h4>
             <ul className="space-y-3 text-sm">
               <FooterLink to="/" text="Home" />
-              <FooterLink to="/catalog" text="Browse Courses" />
-              <FooterLink to="/resources" text="Resources & Notes" />
+              <FooterLink to="/courses" text="Browse Courses" />
+              <FooterLink to="/resources" text="Resources & Blog" />
               <FooterLink to="/about" text="About Us" />
             </ul>
           </div>

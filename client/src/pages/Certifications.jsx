@@ -257,7 +257,7 @@ const Certifications = () => {
             <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100 flex">
                 <Sidebar />
 
-                <main className="ml-64 w-[calc(100%-16rem)] p-8 flex flex-col justify-between min-h-screen">
+                <main className="ml-64 w-[calc(100%-16rem)] p-8">
                     <div className="mb-8">
                         <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white">My Certifications</h1>
                         <p className="text-slate-500 dark:text-slate-300">View and download your earned credentials (80% completion required).</p>
@@ -314,23 +314,6 @@ const Certifications = () => {
                             <Link to="/dashboard/learner"><button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">Go to Dashboard</button></Link>
                         </div>
                     )}
-
-                    {/* --- DASHBOARD FOOTER --- */}
-                    <footer className="mt-16 -mx-8 -mb-8 border-t border-slate-200/80 bg-white/40 px-8 py-6 text-xs text-slate-500 backdrop-blur-sm dark:border-slate-800/80 dark:bg-slate-900/40 dark:text-slate-400">
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <div className="flex items-center gap-2">
-                                <span className="font-bold text-slate-800 dark:text-slate-200">SkillHub<span className="text-blue-600">NG</span></span>
-                                <span>•</span>
-                                <span>Empowering Nigerian Digital Learners © {new Date().getFullYear()}</span>
-                            </div>
-                            <div className="flex items-center gap-6 font-medium">
-                                <Link to="/catalog" className="hover:text-blue-600 transition-colors">Courses</Link>
-                                <Link to="/resources" className="hover:text-blue-600 transition-colors">Resources</Link>
-                                <Link to="/dashboard/learner" className="hover:text-blue-600 transition-colors">Dashboard</Link>
-                                <Link to="/contact" className="hover:text-blue-600 transition-colors">Help & Support</Link>
-                            </div>
-                        </div>
-                    </footer>
                 </main>
             </div>
 
