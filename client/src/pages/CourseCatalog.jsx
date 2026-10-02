@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar.jsx';
+import Footer from '../components/layout/Footer.jsx';
 import Button from '../components/common/Button.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { getAllCourses, getCourseById } from '../utils/courseStore.js';
@@ -51,10 +52,10 @@ const CourseCatalog = () => {
     });
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
+        <div className="min-h-screen bg-slate-50 font-sans flex flex-col text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
             <Navbar />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
                     <div>
@@ -171,7 +172,9 @@ const CourseCatalog = () => {
                         </div>
                     )}
                 </div>
-            </div>
+            </main>
+
+            <Footer />
         </div>
     );
 };

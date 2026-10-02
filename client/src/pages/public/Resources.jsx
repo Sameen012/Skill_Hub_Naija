@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, FileText, Download } from 'lucide-react';
+import { ArrowLeft, FileText, Download, Sparkles } from 'lucide-react';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
 import api from '../../api/axios';
 
 const API_BASE_URL = api.defaults.baseURL || 'http://localhost:5000/api';
@@ -23,25 +25,30 @@ const Resources = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-10 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
-      <div className="mx-auto max-w-5xl">
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-          >
-            <ArrowLeft size={16} />
-            Go Back
-          </button>
+    <div className="min-h-screen bg-slate-50 font-sans flex flex-col text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
+      <Navbar />
 
-          <Link
-            to="/"
-            className="text-sm font-medium text-blue-600 transition hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-          >
-            Back to Home
-          </Link>
+      {/* --- HERO HEADER --- */}
+      <div className="relative bg-blue-900 text-white py-16 md:py-20 px-6 overflow-hidden">
+        <div className="absolute top-0 left-0 w-64 h-64 bg-blue-700 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-700 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+
+        <div className="max-w-5xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 bg-blue-800/60 border border-blue-700 rounded-full px-4 py-1.5 mb-4 backdrop-blur-sm">
+            <Sparkles size={16} className="text-yellow-400" />
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-100">Free Downloads</span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">
+            Learning Resources & Documents
+          </h1>
+          <p className="text-base md:text-lg text-blue-100 max-w-2xl mx-auto leading-relaxed">
+            Access downloadable PDF guides, cheat sheets, and curriculum materials curated to boost your learning.
+          </p>
         </div>
+      </div>
+
+      {/* --- MAIN CONTENT CONTAINER --- */}
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 -mt-6 relative z-20">
 
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div className="mb-6 flex items-start gap-4">
@@ -97,7 +104,9 @@ const Resources = () => {
             </div>
           )}
         </div>
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 };
