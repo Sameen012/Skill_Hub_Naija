@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Sidebar from '../../components/layout/Sidebar'; // Ensure you created Sidebar.jsx
+import Footer from '../../components/layout/Footer';
 import { getCourseById } from '../../utils/courseStore.js';
 import { getEnrolledCourseIds, getCourseProgress } from '../../utils/enrollmentStore.js';
 import { 
@@ -81,7 +82,7 @@ const LearnerDashboard = () => {
             <Sidebar />
 
             {/* 2. MAIN CONTENT AREA */}
-            <main className="min-w-0 flex-1 lg:ml-64">
+            <main className="min-w-0 flex-1 lg:ml-64 flex flex-col justify-between">
                 
                 {/* --- A. HERO HEADER (Blue Brand Color) --- */}
                 <div className="bg-blue-900 text-white pt-10 pb-24 px-8 relative overflow-hidden">
@@ -244,6 +245,8 @@ const LearnerDashboard = () => {
 
                     </div>
                 </div>
+
+                <Footer />
             </main>
         </div>
     );

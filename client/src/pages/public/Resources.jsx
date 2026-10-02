@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, FileText, Download } from 'lucide-react';
+import Footer from '../../components/layout/Footer';
 import api from '../../api/axios';
 
 const API_BASE_URL = api.defaults.baseURL || 'http://localhost:5000/api';
@@ -23,8 +24,8 @@ const Resources = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-10 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
-      <div className="mx-auto max-w-5xl">
+    <div className="min-h-screen flex flex-col justify-between bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
+      <div className="mx-auto max-w-5xl w-full px-4 py-10 flex-1">
         <div className="mb-6 flex items-center justify-between gap-4">
           <button
             type="button"
@@ -98,6 +99,8 @@ const Resources = () => {
           )}
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // FIX: Changed "../../" to "../" because this file is in src/pages/
 import Sidebar from '../components/layout/Sidebar';
+import Footer from '../components/layout/Footer';
 import { getCourseById } from '../utils/courseStore.js';
 import { getEnrolledCourseIds, getCourseProgress } from '../utils/enrollmentStore.js';
 import { Award, Download, X, Calendar, CheckCircle, Lock, Eye, Printer } from 'lucide-react';
@@ -257,8 +258,9 @@ const Certifications = () => {
             <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100 flex">
                 <Sidebar />
 
-                <main className="ml-64 w-[calc(100%-16rem)] p-8">
-                    <div className="mb-8">
+                <main className="ml-64 w-[calc(100%-16rem)] flex flex-col justify-between min-h-screen">
+                    <div className="p-8 flex-1">
+                        <div className="mb-8">
                         <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white">My Certifications</h1>
                         <p className="text-slate-500 dark:text-slate-300">View and download your earned credentials (80% completion required).</p>
                     </div>
@@ -314,6 +316,9 @@ const Certifications = () => {
                             <Link to="/dashboard/learner"><button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">Go to Dashboard</button></Link>
                         </div>
                     )}
+                    </div>
+
+                    <Footer />
                 </main>
             </div>
 

@@ -1,4 +1,4 @@
-﻿import React, { Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Loader from '../components/common/Loader';
@@ -50,6 +50,7 @@ const AppRoutes = () => {
             <Route path="/reset-password/:token" element={<Suspense fallback={<PageLoader />}><ResetPassword /></Suspense>} />
             <Route path="/forgot-password" element={<Suspense fallback={<PageLoader />}><ForgotPassword /></Suspense>} />
             <Route path="/catalog" element={<Suspense fallback={<PageLoader />}><CourseCatalog /></Suspense>} />
+            <Route path="/courses" element={<Navigate to="/catalog" replace />} />
 
             {/* --- Protected Routes --- */}
             <Route element={<ProtectedRoute />}>
