@@ -533,41 +533,90 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                            <div className="space-y-4">
                                 {filteredCourses.map((course) => (
-                                    <article key={course.id} className={`overflow-hidden rounded-2xl border transition-all ${Number(activeCourseId) === Number(course.id) ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-slate-200 dark:border-slate-800'} bg-slate-50 dark:bg-slate-950`}>
-                                        <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr]">
-                                            <div className="relative min-h-40 bg-slate-200 dark:bg-slate-800">
-                                                <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover" />
-                                                <span className="absolute left-3 top-3 rounded-full bg-black/70 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
-                                                    {course.status}
-                                                </span>
-                                            </div>
-                                            <div className="p-4">
-                                                <div className="flex items-start justify-between gap-3">
+                                    <article 
+                                        key={course.id} 
+                                        className={`group overflow-hidden rounded-2xl border transition-all ${
+                                            Number(activeCourseId) === Number(course.id) 
+                                                ? 'border-blue-500 bg-blue-50/30 ring-2 ring-blue-500/20 dark:border-blue-500 dark:bg-blue-950/20' 
+                                                : 'border-slate-200 bg-slate-50/60 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-slate-700'
+                                        } p-4 shadow-xs`}
+                                    >
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                            {/* Left: Horizontal Thumbnail & Main Info */}
+                                            <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-1 min-w-0">
+                                                <div className="relative h-28 w-full sm:w-44 md:w-48 flex-shrink-0 overflow-hidden rounded-xl bg-slate-200 dark:bg-slate-800">
+                                                    <img 
+                                                        src={course.thumbnail} 
+                                                        alt={course.title} 
+                                                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" 
+                                                    />
+                                                    <span className={`absolute left-2.5 top-2.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm ${
+                                                        course.status === 'Published' ? 'bg-emerald-600/90' : 'bg-amber-600/90'
+                                                    }`}>
+                                                        {course.status}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex-1 min-w-0 space-y-2">
                                                     <div>
-                                                        <h3 className="font-bold text-slate-900 dark:text-white">{course.title}</h3>
-                                                        <p className="text-sm text-slate-500 dark:text-slate-400">{course.category} • {course.modules?.length || 0} lessons</p>
+                                                        <h3 className="font-bold text-slate-900 dark:text-white text-base sm:text-lg leading-snug">
+                                                            {course.title}
+                                                        </h3>
+                                                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                                                            <span className="font-medium text-slate-700 dark:text-slate-300">{course.category}</span>
+                                                            <span className="mx-1.5">•</span>
+                                                            <span>{course.modules?.length || 0} lessons</span>
+                                                        </p>
                                                     </div>
-                                                    <div className="flex gap-1">
-                                                        <button type="button" onClick={() => handleCourseEdit(course)} className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-800">
-                                                            <Edit size={16} />
-                                                        </button>
-                                                        <button type="button" onClick={() => handleCourseDelete(course.id)} className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40">
-                                                            <Trash2 size={16} />
-                                                        </button>
+
+                                                    <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-300">
+                                                        <span className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-800 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200">
+                                                            {course.price === 0 || course.price === '0' ? 'Free' : `$${course.price}`}
+                                                        </span>
+                                                        <span className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 capitalize dark:border-slate-800 dark:bg-slate-900">
+                                                            {course.type}
+                                                        </span>
+                                                        <span className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 dark:border-slate-800 dark:bg-slate-900">
+                                                            {course.instructor}
+                                                        </span>
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-                                                    <span className="rounded-full bg-white px-2 py-1 dark:bg-slate-900">${course.price}</span>
-                                                    <span className="rounded-full bg-white px-2 py-1 dark:bg-slate-900">{course.type}</span>
-                                                    <span className="rounded-full bg-white px-2 py-1 dark:bg-slate-900">{course.instructor}</span>
-                                                </div>
-
-                                                <button type="button" onClick={() => setActiveCourseId(course.id)} className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400">
-                                                    <Eye size={16} /> Manage lessons
+                                            {/* Right: Actions */}
+                                            <div className="flex sm:flex-col lg:flex-row items-center gap-2 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-200/80 dark:border-slate-800 flex-shrink-0">
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => setActiveCourseId(course.id)} 
+                                                    className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-semibold transition-all ${
+                                                        Number(activeCourseId) === Number(course.id)
+                                                            ? 'bg-blue-600 text-white shadow-sm'
+                                                            : 'bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300 dark:hover:bg-blue-900/60'
+                                                    }`}
+                                                >
+                                                    <Eye size={15} />
+                                                    <span>Manage lessons</span>
                                                 </button>
+                                                <div className="flex items-center gap-1">
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => handleCourseEdit(course)} 
+                                                        className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-500 hover:bg-blue-50 hover:text-blue-600 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800 transition-colors"
+                                                        title="Edit Course"
+                                                    >
+                                                        <Edit size={15} />
+                                                    </button>
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => handleCourseDelete(course.id)} 
+                                                        className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-red-950/40 transition-colors"
+                                                        title="Delete Course"
+                                                    >
+                                                        <Trash2 size={15} />
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </article>
@@ -684,45 +733,80 @@ const AdminDashboard = () => {
                             </div>
 
                             {selectedCourse ? (
-                                <div className="grid grid-cols-1 gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-                                    <form className="space-y-4 rounded-2xl border border-slate-200 p-4 dark:border-slate-800" onSubmit={handleLessonSave}>
-                                        <h3 className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
-                                            <Plus size={18} /> Add Lesson
+                                <div className="space-y-6">
+                                    {/* Flat Horizontal Add Lesson Form */}
+                                    <form className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5 dark:border-slate-800 dark:bg-slate-950/50" onSubmit={handleLessonSave}>
+                                        <h3 className="mb-3 flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+                                            <Plus size={18} className="text-blue-600" /> Add New Lesson to &ldquo;{selectedCourse.title}&rdquo;
                                         </h3>
-                                        <Input label="Lesson Title" value={lessonForm.title} onChange={(e) => setLessonForm((current) => ({ ...current, title: e.target.value }))} />
-                                        <Input label="Duration" placeholder="10:30" value={lessonForm.duration} onChange={(e) => setLessonForm((current) => ({ ...current, duration: e.target.value }))} />
-                                        <Input label="Video URL" value={lessonForm.videoUrl} onChange={(e) => setLessonForm((current) => ({ ...current, videoUrl: e.target.value }))} />
-                                        <Button type="submit" variant="primary" className="w-full gap-2">
-                                            <Save size={18} /> Save Lesson
-                                        </Button>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1.5fr_auto] gap-3 items-end">
+                                            <Input label="Lesson Title" placeholder="e.g. Introduction" value={lessonForm.title} onChange={(e) => setLessonForm((current) => ({ ...current, title: e.target.value }))} />
+                                            <Input label="Duration" placeholder="e.g. 10:20" value={lessonForm.duration} onChange={(e) => setLessonForm((current) => ({ ...current, duration: e.target.value }))} />
+                                            <Input label="Video URL" placeholder="https://..." value={lessonForm.videoUrl} onChange={(e) => setLessonForm((current) => ({ ...current, videoUrl: e.target.value }))} />
+                                            <Button type="submit" variant="primary" className="h-[44px] px-5 gap-1.5 whitespace-nowrap justify-center">
+                                                <Save size={16} /> Save Lesson
+                                            </Button>
+                                        </div>
                                     </form>
 
-                                    <div className="space-y-3 rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
-                                        <h3 className="font-semibold text-slate-900 dark:text-white">Current Lesson List</h3>
-                                        <div className="space-y-2">
-                                            {(selectedCourse.modules || []).length > 0 ? (
-                                                selectedCourse.modules.map((lesson, index) => (
-                                                    <div key={lesson.id} className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950">
-                                                        <div>
-                                                            <p className="text-sm font-semibold text-slate-900 dark:text-white">{index + 1}. {lesson.title}</p>
-                                                            <p className="text-xs text-slate-500 dark:text-slate-400">{lesson.duration}</p>
+                                    {/* Flat Horizontal Current Lesson List */}
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="font-bold text-slate-900 dark:text-white text-base">Current Lesson List</h3>
+                                            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                                {(selectedCourse.modules || []).length} lessons total
+                                            </span>
+                                        </div>
+
+                                        {(selectedCourse.modules || []).length > 0 ? (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                {selectedCourse.modules.map((lesson, index) => (
+                                                    <div 
+                                                        key={lesson.id} 
+                                                        className="flex items-center justify-between rounded-xl border border-slate-200/90 bg-white p-3 shadow-xs hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/80 dark:hover:border-slate-700 transition-colors"
+                                                    >
+                                                        <div className="flex items-center gap-3 min-w-0 flex-1 pr-2">
+                                                            <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50 text-xs font-bold text-blue-600 dark:bg-blue-950/60 dark:text-blue-300">
+                                                                {index + 1}
+                                                            </span>
+                                                            <div className="min-w-0 flex-1">
+                                                                <p className="text-sm font-semibold text-slate-900 dark:text-white truncate" title={lesson.title}>
+                                                                    {lesson.title}
+                                                                </p>
+                                                                <span className="inline-block text-[11px] font-medium text-slate-400">
+                                                                    {lesson.duration || '00:00'}
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                        <div className="flex gap-2">
-                                                            <a href={lesson.videoUrl} target="_blank" rel="noreferrer" className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-800">
-                                                                <Video size={16} />
-                                                            </a>
-                                                            <button type="button" onClick={() => handleLessonRemove(lesson.id)} className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40">
+                                                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                                                            {lesson.videoUrl && (
+                                                                <a 
+                                                                    href={lesson.videoUrl} 
+                                                                    target="_blank" 
+                                                                    rel="noreferrer" 
+                                                                    className="rounded-lg p-2 text-slate-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-800 transition-colors"
+                                                                    title="Watch Video"
+                                                                >
+                                                                    <Video size={16} />
+                                                                </a>
+                                                            )}
+                                                            <button 
+                                                                type="button" 
+                                                                onClick={() => handleLessonRemove(lesson.id)} 
+                                                                className="rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 transition-colors"
+                                                                title="Remove Lesson"
+                                                            >
                                                                 <Trash2 size={16} />
                                                             </button>
                                                         </div>
                                                     </div>
-                                                ))
-                                            ) : (
-                                                <div className="rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
-                                                    This course has no lessons yet.
-                                                </div>
-                                            )}
-                                        </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                                                This course has no lessons yet. Use the form above to add the first lesson!
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             ) : (
