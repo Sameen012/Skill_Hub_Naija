@@ -25,6 +25,18 @@ import {
     Video,
     FileText,
     Upload,
+    Globe,
+    Layers,
+    Tag,
+    User,
+    Code,
+    Play,
+    PlayCircle,
+    ChevronRight,
+    Clock,
+    GraduationCap,
+    UploadCloud,
+    Download,
 } from 'lucide-react';
 
 const emptyCourseForm = {
@@ -516,305 +528,6 @@ const AdminDashboard = () => {
                             </form>
                         </section>
 
-                        <section id="lessons" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20">
-                            <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                                <div>
-                                    <h2 className="text-xl font-bold text-slate-900 dark:text-white">Course Library</h2>
-                                    <p className="text-sm text-slate-500 dark:text-slate-400">Edit or remove existing courses.</p>
-                                </div>
-                                <div className="relative w-full md:w-72">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                                    <input
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        placeholder="Search courses..."
-                                        className="theme-input pl-10"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-4">
-                                {filteredCourses.map((course) => (
-                                    <article 
-                                        key={course.id} 
-                                        className={`group overflow-hidden rounded-2xl border transition-all ${
-                                            Number(activeCourseId) === Number(course.id) 
-                                                ? 'border-blue-500 bg-blue-50/30 ring-2 ring-blue-500/20 dark:border-blue-500 dark:bg-blue-950/20' 
-                                                : 'border-slate-200 bg-slate-50/60 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-slate-700'
-                                        } p-4 shadow-xs`}
-                                    >
-                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                            {/* Left: Horizontal Thumbnail & Main Info */}
-                                            <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-1 min-w-0">
-                                                <div className="relative h-28 w-full sm:w-44 md:w-48 flex-shrink-0 overflow-hidden rounded-xl bg-slate-200 dark:bg-slate-800">
-                                                    <img 
-                                                        src={course.thumbnail} 
-                                                        alt={course.title} 
-                                                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" 
-                                                    />
-                                                    <span className={`absolute left-2.5 top-2.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm ${
-                                                        course.status === 'Published' ? 'bg-emerald-600/90' : 'bg-amber-600/90'
-                                                    }`}>
-                                                        {course.status}
-                                                    </span>
-                                                </div>
-
-                                                <div className="flex-1 min-w-0 space-y-2">
-                                                    <div>
-                                                        <h3 className="font-bold text-slate-900 dark:text-white text-base sm:text-lg leading-snug">
-                                                            {course.title}
-                                                        </h3>
-                                                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                                                            <span className="font-medium text-slate-700 dark:text-slate-300">{course.category}</span>
-                                                            <span className="mx-1.5">•</span>
-                                                            <span>{course.modules?.length || 0} lessons</span>
-                                                        </p>
-                                                    </div>
-
-                                                    <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-300">
-                                                        <span className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 font-semibold text-slate-800 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200">
-                                                            {course.price === 0 || course.price === '0' ? 'Free' : `$${course.price}`}
-                                                        </span>
-                                                        <span className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 capitalize dark:border-slate-800 dark:bg-slate-900">
-                                                            {course.type}
-                                                        </span>
-                                                        <span className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 dark:border-slate-800 dark:bg-slate-900">
-                                                            {course.instructor}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* Right: Actions */}
-                                            <div className="flex sm:flex-col lg:flex-row items-center gap-2 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-200/80 dark:border-slate-800 flex-shrink-0">
-                                                <button 
-                                                    type="button" 
-                                                    onClick={() => setActiveCourseId(course.id)} 
-                                                    className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-semibold transition-all ${
-                                                        Number(activeCourseId) === Number(course.id)
-                                                            ? 'bg-blue-600 text-white shadow-sm'
-                                                            : 'bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300 dark:hover:bg-blue-900/60'
-                                                    }`}
-                                                >
-                                                    <Eye size={15} />
-                                                    <span>Manage lessons</span>
-                                                </button>
-                                                <div className="flex items-center gap-1">
-                                                    <button 
-                                                        type="button" 
-                                                        onClick={() => handleCourseEdit(course)} 
-                                                        className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-500 hover:bg-blue-50 hover:text-blue-600 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800 transition-colors"
-                                                        title="Edit Course"
-                                                    >
-                                                        <Edit size={15} />
-                                                    </button>
-                                                    <button 
-                                                        type="button" 
-                                                        onClick={() => handleCourseDelete(course.id)} 
-                                                        className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-red-950/40 transition-colors"
-                                                        title="Delete Course"
-                                                    >
-                                                        <Trash2 size={15} />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </article>
-                                ))}
-                            </div>
-                        </section>
-
-                        <section id="resources" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20">
-                            <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                                <div>
-                                    <h2 className="text-xl font-bold text-slate-900 dark:text-white">PDF Resources</h2>
-                                    <p className="text-sm text-slate-500 dark:text-slate-400">Upload PDF files for later reference.</p>
-                                </div>
-                                <span className="rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700 dark:bg-rose-950/50 dark:text-rose-300">
-                                    {resources.length} files
-                                </span>
-                            </div>
-
-                            <form className="grid grid-cols-1 gap-4 md:grid-cols-2" onSubmit={handleResourceSave}>
-                                <div>
-                                    <label className="theme-label mb-1">Resource Title</label>
-                                    <input
-                                        className="theme-input"
-                                        value={resourceForm.title}
-                                        onChange={(e) => setResourceForm((current) => ({ ...current, title: e.target.value }))}
-                                        placeholder="Advanced React handbook"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="theme-label mb-1">Attach to Course</label>
-                                    <select
-                                        className="theme-input"
-                                        value={resourceForm.courseId}
-                                        onChange={(e) => setResourceForm((current) => ({ ...current, courseId: e.target.value }))}
-                                    >
-                                        <option value="all">All courses</option>
-                                        {courses.map((course) => (
-                                            <option key={course.id} value={course.id}>{course.title}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label className="theme-label mb-1">Description</label>
-                                    <textarea
-                                        rows={3}
-                                        className="theme-input"
-                                        value={resourceForm.description}
-                                        onChange={(e) => setResourceForm((current) => ({ ...current, description: e.target.value }))}
-                                        placeholder="Short description for the PDF"
-                                    />
-                                </div>
-                                <div className="md:col-span-2 rounded-2xl border border-dashed border-slate-300 p-4 dark:border-slate-700">
-                                    <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
-                                        <Upload size={18} /> Upload PDF
-                                    </div>
-                                    <input type="file" accept="application/pdf" onChange={handleResourceFileUpload} className="block w-full text-sm text-slate-500 file:mr-4 file:rounded-lg file:border-0 file:bg-rose-600 file:px-4 file:py-2 file:text-white hover:file:bg-rose-700 dark:text-slate-400" />
-                                    {resourceForm.fileName && (
-                                        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-                                            Selected: {resourceForm.fileName} {resourceForm.fileSize ? `(${resourceForm.fileSize})` : ''}
-                                        </p>
-                                    )}
-                                </div>
-                                <div className="md:col-span-2 flex flex-wrap gap-3 pt-2">
-                                    <Button type="submit" variant="primary" className="gap-2">
-                                        <FileText size={18} /> Save PDF Resource
-                                    </Button>
-                                </div>
-                            </form>
-
-                            <div className="mt-6 space-y-3">
-                                {resources.length > 0 ? (
-                                    resources.map((resource) => (
-                                        <div key={resource.id} className="rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
-                                            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                                                <div>
-                                                    <p className="font-semibold text-slate-900 dark:text-white">{resource.title}</p>
-                                                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                                                        {resource.fileName} {resource.fileSize ? `• ${Math.max(1, Math.round(resource.fileSize / 1024))} KB` : ''}
-                                                    </p>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <a href={`${API_BASE_URL}${resource.downloadUrl}`} download={resource.fileName} className="rounded-lg bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 hover:bg-rose-100 dark:bg-rose-950/50 dark:text-rose-300 dark:hover:bg-rose-950">
-                                                        Download
-                                                    </a>
-                                                    <button type="button" onClick={() => handleResourceDelete(resource.id)} className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-red-600 dark:hover:bg-slate-800">
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            {resource.description && (
-                                                <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{resource.description}</p>
-                                            )}
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
-                                        No PDF resources uploaded yet.
-                                    </div>
-                                )}
-                            </div>
-                        </section>
-
-                        <section id="enrollments" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20">
-                            <div className="mb-4 flex items-center justify-between gap-4">
-                                <div>
-                                    <h2 className="text-xl font-bold text-slate-900 dark:text-white">Manage Lessons</h2>
-                                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                                        {selectedCourse ? `Selected course: ${selectedCourse.title}` : 'Choose a course to manage its lessons.'}
-                                    </p>
-                                </div>
-                                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-300">
-                                    {selectedCourse?.modules?.length || 0} lessons
-                                </span>
-                            </div>
-
-                            {selectedCourse ? (
-                                <div className="space-y-6">
-                                    {/* Flat Horizontal Add Lesson Form */}
-                                    <form className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5 dark:border-slate-800 dark:bg-slate-950/50" onSubmit={handleLessonSave}>
-                                        <h3 className="mb-3 flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
-                                            <Plus size={18} className="text-blue-600" /> Add New Lesson to &ldquo;{selectedCourse.title}&rdquo;
-                                        </h3>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1.5fr_auto] gap-3 items-end">
-                                            <Input label="Lesson Title" placeholder="e.g. Introduction" value={lessonForm.title} onChange={(e) => setLessonForm((current) => ({ ...current, title: e.target.value }))} />
-                                            <Input label="Duration" placeholder="e.g. 10:20" value={lessonForm.duration} onChange={(e) => setLessonForm((current) => ({ ...current, duration: e.target.value }))} />
-                                            <Input label="Video URL" placeholder="https://..." value={lessonForm.videoUrl} onChange={(e) => setLessonForm((current) => ({ ...current, videoUrl: e.target.value }))} />
-                                            <Button type="submit" variant="primary" className="h-[44px] px-5 gap-1.5 whitespace-nowrap justify-center">
-                                                <Save size={16} /> Save Lesson
-                                            </Button>
-                                        </div>
-                                    </form>
-
-                                    {/* Flat Horizontal Current Lesson List */}
-                                    <div className="space-y-3">
-                                        <div className="flex items-center justify-between">
-                                            <h3 className="font-bold text-slate-900 dark:text-white text-base">Current Lesson List</h3>
-                                            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                                                {(selectedCourse.modules || []).length} lessons total
-                                            </span>
-                                        </div>
-
-                                        {(selectedCourse.modules || []).length > 0 ? (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                {selectedCourse.modules.map((lesson, index) => (
-                                                    <div 
-                                                        key={lesson.id} 
-                                                        className="flex items-center justify-between rounded-xl border border-slate-200/90 bg-white p-3 shadow-xs hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/80 dark:hover:border-slate-700 transition-colors"
-                                                    >
-                                                        <div className="flex items-center gap-3 min-w-0 flex-1 pr-2">
-                                                            <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50 text-xs font-bold text-blue-600 dark:bg-blue-950/60 dark:text-blue-300">
-                                                                {index + 1}
-                                                            </span>
-                                                            <div className="min-w-0 flex-1">
-                                                                <p className="text-sm font-semibold text-slate-900 dark:text-white truncate" title={lesson.title}>
-                                                                    {lesson.title}
-                                                                </p>
-                                                                <span className="inline-block text-[11px] font-medium text-slate-400">
-                                                                    {lesson.duration || '00:00'}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex items-center gap-1.5 flex-shrink-0">
-                                                            {lesson.videoUrl && (
-                                                                <a 
-                                                                    href={lesson.videoUrl} 
-                                                                    target="_blank" 
-                                                                    rel="noreferrer" 
-                                                                    className="rounded-lg p-2 text-slate-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-800 transition-colors"
-                                                                    title="Watch Video"
-                                                                >
-                                                                    <Video size={16} />
-                                                                </a>
-                                                            )}
-                                                            <button 
-                                                                type="button" 
-                                                                onClick={() => handleLessonRemove(lesson.id)} 
-                                                                className="rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 transition-colors"
-                                                                title="Remove Lesson"
-                                                            >
-                                                                <Trash2 size={16} />
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
-                                                This course has no lessons yet. Use the form above to add the first lesson!
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="rounded-2xl border border-dashed border-slate-200 p-10 text-center text-slate-500 dark:border-slate-800 dark:text-slate-400">
-                                    Select a course to manage its lessons.
-                                </div>
-                            )}
-                        </section>
                     </div>
 
                     <div className="space-y-6">
@@ -906,6 +619,439 @@ const AdminDashboard = () => {
                             </div>
                         </section>
                     </div>
+                </div>
+
+                {/* --- FULL-WIDTH SECTIONS: Course Library, Current Lesson List, and PDF Resources --- */}
+                <div className="mt-8 space-y-8">
+                    {/* 1. Course Library Section (Matching Image 1) */}
+                    <section id="lessons" className="rounded-3xl border border-blue-900/30 bg-[#0b1220]/90 p-6 sm:p-8 shadow-2xl backdrop-blur-md">
+                        <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Course Library</h2>
+                                <p className="text-sm text-slate-400 mt-0.5">Edit or remove existing courses.</p>
+                            </div>
+                            <div className="relative w-full md:w-80">
+                                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                                <input
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    placeholder="Search courses..."
+                                    className="w-full rounded-2xl border border-slate-800 bg-slate-900/70 pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {filteredCourses.map((course) => (
+                                <article 
+                                    key={course.id} 
+                                    className={`group relative overflow-hidden rounded-3xl border transition-all duration-300 ${
+                                        Number(activeCourseId) === Number(course.id) 
+                                            ? 'border-blue-500 ring-2 ring-blue-500/40 shadow-xl shadow-blue-500/10' 
+                                            : 'border-slate-800/80 hover:border-slate-700 shadow-xl'
+                                    } bg-slate-950/80 p-5 flex flex-col justify-between`}
+                                >
+                                    {/* Thumbnail with PUBLISHED badge */}
+                                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-slate-900">
+                                        <img 
+                                            src={course.thumbnail} 
+                                            alt={course.title} 
+                                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                                        />
+                                        <span className={`absolute left-3.5 top-3.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-md ${
+                                            course.status === 'Published' || !course.status || course.status === 'PUBLISHED'
+                                                ? 'bg-emerald-500 shadow-emerald-500/30'
+                                                : 'bg-amber-500 shadow-amber-500/30'
+                                        }`}>
+                                            {course.status || 'PUBLISHED'}
+                                        </span>
+                                    </div>
+
+                                    {/* Centered Title & Metadata with icons */}
+                                    <div className="mt-5 text-center flex-1">
+                                        <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight">
+                                            {course.title}
+                                        </h3>
+                                        <div className="mt-2.5 flex items-center justify-center gap-2 text-sm text-slate-400">
+                                            <span className="flex items-center gap-1.5 text-slate-300">
+                                                <Globe size={16} className="text-blue-400" />
+                                                {course.category}
+                                            </span>
+                                            <span>•</span>
+                                            <span className="flex items-center gap-1.5 text-slate-300">
+                                                <Layers size={16} className="text-blue-400" />
+                                                {course.modules?.length || 0} lessons
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Button Row matching Image 1 */}
+                                    <div className="mt-6 flex items-center gap-3 w-full">
+                                        <button 
+                                            type="button" 
+                                            onClick={() => {
+                                                setActiveCourseId(course.id);
+                                                const element = document.getElementById('enrollments');
+                                                if (element) element.scrollIntoView({ behavior: 'smooth' });
+                                            }} 
+                                            className="flex-1 flex items-center justify-between px-5 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-sky-500 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 hover:from-blue-500 hover:to-sky-400 transition-all active:scale-[0.98]"
+                                        >
+                                            <div className="flex items-center gap-2.5">
+                                                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-blue-600">
+                                                    <Play size={11} className="fill-current ml-0.5" />
+                                                </div>
+                                                <span>Manage lessons</span>
+                                            </div>
+                                            <ChevronRight size={18} />
+                                        </button>
+
+                                        <button 
+                                            type="button" 
+                                            onClick={() => handleCourseEdit(course)} 
+                                            className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-700/60 bg-slate-800/40 text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                                            title="Edit Course"
+                                        >
+                                            <Edit size={18} />
+                                        </button>
+
+                                        <button 
+                                            type="button" 
+                                            onClick={() => handleCourseDelete(course.id)} 
+                                            className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-700/60 bg-slate-800/40 text-slate-300 hover:bg-red-950/40 hover:border-red-800/60 hover:text-red-400 transition-colors"
+                                            title="Delete Course"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </div>
+
+                                    {/* Bottom Tags matching Image 1 */}
+                                    <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5 pt-1">
+                                        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-700/60 bg-slate-900/80 px-3.5 py-1.5 text-xs font-medium text-slate-300">
+                                            <Tag size={12} className="text-blue-400" />
+                                            {course.price === 0 || course.price === '0' ? 'Free' : `$${course.price}`}
+                                        </span>
+                                        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-700/60 bg-slate-900/80 px-3.5 py-1.5 text-xs font-medium capitalize text-slate-300">
+                                            <User size={12} className="text-blue-400" />
+                                            {course.type}
+                                        </span>
+                                        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-700/60 bg-slate-900/80 px-3.5 py-1.5 text-xs font-medium text-slate-300 max-w-[220px] truncate" title={course.instructor}>
+                                            <Code size={12} className="text-blue-400" />
+                                            {course.instructor}
+                                        </span>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* 2. Current Lesson List Section (Matching Image 2) */}
+                    <section id="enrollments" className="rounded-3xl border border-blue-900/30 bg-[#0b1220]/90 p-6 sm:p-8 shadow-2xl backdrop-blur-md">
+                        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div className="flex items-start gap-3.5">
+                                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600/20 text-blue-400 border border-blue-500/30 shadow-md">
+                                    <BookOpen size={24} />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Current Lesson List</h2>
+                                    <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
+                                        Follow the lessons in order and build your {selectedCourse ? selectedCourse.title : 'course'} skills step by step.
+                                    </p>
+                                </div>
+                            </div>
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-900/60 bg-blue-950/40 px-4 py-1.5 text-xs font-medium text-blue-300 self-start sm:self-auto shadow-sm">
+                                <GraduationCap size={15} className="text-blue-400" />
+                                {selectedCourse?.modules?.length || 0} lessons total
+                            </span>
+                        </div>
+
+                        {selectedCourse ? (
+                            <div className="space-y-6">
+                                {/* Add Lesson Form */}
+                                <form className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4 sm:p-5" onSubmit={handleLessonSave}>
+                                    <h3 className="mb-3 flex items-center gap-2 font-semibold text-slate-200 text-sm">
+                                        <Plus size={16} className="text-blue-400" /> Add New Lesson to &ldquo;{selectedCourse.title}&rdquo;
+                                    </h3>
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-[1.5fr_1fr_1.5fr_auto] gap-3 items-end">
+                                        <Input label="Lesson Title" placeholder="e.g. Introduction to React" value={lessonForm.title} onChange={(e) => setLessonForm((current) => ({ ...current, title: e.target.value }))} />
+                                        <Input label="Duration" placeholder="e.g. 10:20" value={lessonForm.duration} onChange={(e) => setLessonForm((current) => ({ ...current, duration: e.target.value }))} />
+                                        <Input label="Video URL" placeholder="https://..." value={lessonForm.videoUrl} onChange={(e) => setLessonForm((current) => ({ ...current, videoUrl: e.target.value }))} />
+                                        <Button type="submit" variant="primary" className="h-[44px] px-5 gap-1.5 whitespace-nowrap justify-center">
+                                            <Save size={16} /> Save Lesson
+                                        </Button>
+                                    </div>
+                                </form>
+
+                                {/* 3-column Lesson Grid matching Image 2 */}
+                                {(selectedCourse.modules || []).length > 0 ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                                        {selectedCourse.modules.map((lesson, index) => {
+                                            const isFirst = index === 0;
+                                            return (
+                                                <div 
+                                                    key={lesson.id}
+                                                    className={`group flex items-center justify-between gap-3 rounded-2xl p-3.5 transition-all ${
+                                                        isFirst
+                                                            ? 'border border-blue-500 bg-blue-950/20 ring-2 ring-blue-500/40 shadow-lg shadow-blue-500/20'
+                                                            : 'border border-slate-800/80 bg-slate-950/60 hover:border-slate-700'
+                                                    }`}
+                                                >
+                                                    {/* Blue Number Badge */}
+                                                    <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white font-bold text-sm shadow-md shadow-blue-600/25">
+                                                        {index + 1}
+                                                    </div>
+
+                                                    {/* Title & Duration */}
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="text-sm font-semibold text-white truncate" title={lesson.title}>
+                                                            {lesson.title}
+                                                        </p>
+                                                        <div className="flex items-center gap-1.5 text-xs text-slate-400 mt-1">
+                                                            <Clock size={12} className="text-slate-500" />
+                                                            <span>{lesson.duration || '05:00'}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Action Buttons */}
+                                                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                                                        {lesson.videoUrl && (
+                                                            <a 
+                                                                href={lesson.videoUrl} 
+                                                                target="_blank" 
+                                                                rel="noreferrer" 
+                                                                className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800/70 text-slate-300 hover:bg-blue-600 hover:text-white transition-colors"
+                                                                title="Watch Video"
+                                                            >
+                                                                <Play size={12} className="fill-current ml-0.5" />
+                                                            </a>
+                                                        )}
+                                                        <button 
+                                                            type="button" 
+                                                            onClick={() => handleLessonRemove(lesson.id)} 
+                                                            className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800/70 text-slate-400 hover:bg-red-600/80 hover:text-white transition-colors"
+                                                            title="Delete Lesson"
+                                                        >
+                                                            <Trash2 size={13} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                ) : (
+                                    <div className="rounded-2xl border border-dashed border-slate-800 p-10 text-center text-sm text-slate-500">
+                                        This course has no lessons yet. Use the form above to add the first lesson!
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="rounded-2xl border border-dashed border-slate-800 p-12 text-center text-slate-500">
+                                Select a course from the Course Library above to manage its lessons.
+                            </div>
+                        )}
+                    </section>
+
+                    {/* 3. PDF Resources Section (Matching Image 3) */}
+                    <section id="resources" className="rounded-3xl border border-blue-900/30 bg-[#0b1220]/90 p-6 sm:p-8 shadow-2xl backdrop-blur-md">
+                        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] xl:grid-cols-[420px_1fr] gap-6 items-start">
+                            {/* Left: Upload Form */}
+                            <div className="rounded-3xl border border-slate-800/80 bg-slate-950/80 p-6 shadow-xl space-y-5">
+                                <div className="flex items-start gap-3.5">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-600/30">
+                                        <FileText size={24} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-bold text-white tracking-tight">PDF Resources</h2>
+                                        <p className="text-xs text-slate-400 mt-0.5">Upload PDF files for later reference.</p>
+                                    </div>
+                                </div>
+
+                                <form onSubmit={handleResourceSave} className="space-y-4">
+                                    <div>
+                                        <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5 mb-1.5">
+                                            <Tag size={13} className="text-blue-400" /> Resource Title
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. Advanced React Handbook"
+                                            value={resourceForm.title}
+                                            onChange={(e) => setResourceForm((current) => ({ ...current, title: e.target.value }))}
+                                            className="w-full rounded-xl border border-slate-800 bg-slate-900/70 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5 mb-1.5">
+                                            <GraduationCap size={13} className="text-blue-400" /> Attach to Course
+                                        </label>
+                                        <select
+                                            value={resourceForm.courseId}
+                                            onChange={(e) => setResourceForm((current) => ({ ...current, courseId: e.target.value }))}
+                                            className="w-full rounded-xl border border-slate-800 bg-slate-900/70 px-3.5 py-2.5 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+                                        >
+                                            <option value="all">Select a course</option>
+                                            {courses.map((course) => (
+                                                <option key={course.id} value={course.id}>{course.title}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5 mb-1.5">
+                                            <FileText size={13} className="text-blue-400" /> Description
+                                        </label>
+                                        <textarea
+                                            rows={3}
+                                            placeholder="Short description for the PDF..."
+                                            value={resourceForm.description}
+                                            onChange={(e) => setResourceForm((current) => ({ ...current, description: e.target.value }))}
+                                            className="w-full rounded-xl border border-slate-800 bg-slate-900/70 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+                                        />
+                                    </div>
+
+                                    <div className="rounded-2xl border-2 border-dashed border-blue-900/50 bg-blue-950/10 p-5 text-center transition-colors hover:border-blue-700/60">
+                                        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600/20 text-blue-400 mb-2">
+                                            <UploadCloud size={22} />
+                                        </div>
+                                        <h4 className="text-sm font-semibold text-white">Upload PDF</h4>
+                                        <p className="text-xs text-slate-400 mt-0.5 mb-3">Drag & drop your file here or click to browse</p>
+                                        
+                                        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-blue-600/30 hover:bg-blue-500 transition-all">
+                                            <Upload size={14} />
+                                            <span>Choose File</span>
+                                            <input
+                                                type="file"
+                                                accept="application/pdf"
+                                                onChange={handleResourceFileUpload}
+                                                className="hidden"
+                                            />
+                                        </label>
+                                        <p className="mt-2 text-xs text-slate-400 truncate">
+                                            {resourceForm.fileName || 'No file chosen'}
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        disabled={!resourceForm.title || !resourceForm.file}
+                                        className="w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-sky-500 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 hover:from-blue-500 hover:to-sky-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.99]"
+                                    >
+                                        <Save size={16} />
+                                        <span>Save PDF Resource</span>
+                                    </button>
+                                </form>
+                            </div>
+
+                            {/* Right: Uploaded Resources matching Image 3 */}
+                            <div className="rounded-3xl border border-slate-800/80 bg-slate-950/80 p-6 shadow-xl flex flex-col min-h-[460px]">
+                                <div className="mb-6 flex items-center justify-between">
+                                    <div className="flex items-start gap-3.5">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-600/30">
+                                            <FileText size={24} />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-xl font-bold text-white tracking-tight">Uploaded Resources</h2>
+                                            <p className="text-xs text-slate-400 mt-0.5">Your uploaded PDF files are listed below.</p>
+                                        </div>
+                                    </div>
+                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-900/60 bg-blue-950/40 px-3.5 py-1.5 text-xs font-medium text-blue-300">
+                                        <FileText size={12} className="text-blue-400" />
+                                        {resources.length} files
+                                    </span>
+                                </div>
+
+                                {resources.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {resources.map((resource) => {
+                                            const attachedCourse = courses.find((c) => Number(c.id) === Number(resource.courseId || resource.course_id));
+                                            const courseName = attachedCourse ? attachedCourse.title : (resource.courseId === 'all' || !resource.courseId ? 'General' : resource.category || 'Course Resource');
+                                            return (
+                                                <div 
+                                                    key={resource.id}
+                                                    className="group relative flex flex-col justify-between rounded-2xl border border-slate-800/80 bg-slate-900/60 p-4 transition-all hover:border-blue-900/60 hover:bg-slate-900/90 shadow-md"
+                                                >
+                                                    <div>
+                                                        <div className="flex items-start justify-between gap-3">
+                                                            <div className="flex items-start gap-3 min-w-0 flex-1">
+                                                                {/* Red PDF Icon Badge */}
+                                                                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-red-600 text-white shadow-md shadow-rose-600/25">
+                                                                    <div className="text-center leading-none">
+                                                                        <FileText size={16} className="mx-auto" />
+                                                                        <span className="text-[9px] font-black tracking-tighter">PDF</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="min-w-0 flex-1">
+                                                                    <h4 className="text-sm font-bold text-white leading-snug truncate" title={resource.title}>
+                                                                        {resource.title}
+                                                                    </h4>
+                                                                    <p className="text-xs text-blue-400 flex items-center gap-1 mt-1 truncate">
+                                                                        <GraduationCap size={12} className="flex-shrink-0" />
+                                                                        <span className="truncate">{courseName}</span>
+                                                                    </p>
+                                                                    <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-1.5">
+                                                                        <span>{resource.fileSize || `${Math.max(1, Math.round((resource.file_size || 0) / 1024))} KB`}</span>
+                                                                        <span>•</span>
+                                                                        <span>{resource.createdAt ? formatDate(resource.createdAt) : (resource.created_at ? formatDate(resource.created_at) : 'Today')}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <ChevronRight size={16} className="text-slate-600 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all flex-shrink-0 mt-1" />
+                                                        </div>
+
+                                                        {resource.description && (
+                                                            <p className="mt-2.5 text-xs text-slate-400 line-clamp-2">
+                                                                {resource.description}
+                                                            </p>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="flex items-center justify-end gap-1.5 mt-3 pt-2.5 border-t border-slate-800/80">
+                                                        <a
+                                                            href={`${API_BASE_URL}${resource.downloadUrl || `/resources/${resource.id}/download`}`}
+                                                            download={resource.fileName || resource.file_name}
+                                                            className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800/60 text-slate-400 hover:bg-blue-600 hover:text-white transition-colors"
+                                                            title="Download PDF"
+                                                        >
+                                                            <Download size={14} />
+                                                        </a>
+                                                        <a
+                                                            href={`${API_BASE_URL}${resource.downloadUrl || `/resources/${resource.id}/download`}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800/60 text-slate-400 hover:bg-blue-600 hover:text-white transition-colors"
+                                                            title="View PDF"
+                                                        >
+                                                            <Eye size={14} />
+                                                        </a>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleResourceDelete(resource.id)}
+                                                            className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-800/60 text-slate-400 hover:bg-red-600/80 hover:text-white transition-colors"
+                                                            title="Delete Resource"
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                ) : (
+                                    <div className="flex-1 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-800/80 p-10 text-center">
+                                        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-800/50 text-slate-500">
+                                            <FileText size={26} />
+                                        </div>
+                                        <h4 className="text-sm font-semibold text-white">No PDF resources uploaded yet</h4>
+                                        <p className="text-xs text-slate-400 mt-1 max-w-xs">
+                                            Upload your documents using the form on the left. They will appear here formatted as PDF cards.
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </main>
         </div>
